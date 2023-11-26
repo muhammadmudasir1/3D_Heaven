@@ -1,4 +1,4 @@
-import { allproduct,insertProduct,InsertFDM_Specs,InsertLeaserCutter_Specs,InsertSLA_Specs,InsertScanner_Specs, findProductById, findProductsbyType, changePriority, findTopFive} from "../services/Product_Service.js";
+import { allproduct,insertProduct,InsertFDM_Specs,InsertLeaserCutter_Specs,InsertSLA_Specs,InsertScanner_Specs, findProductById, findProductsbyType, changePriority, findTopFive, testFunction} from "../services/Product_Service.js";
 import createError from 'http-errors'
 
 
@@ -36,21 +36,28 @@ export const CreateSpecs= async(req,res,next)=>{
         
         const data=req.body
         const product=await findProductById(req.body.Product_Id)
-        const productJSON=await product.toJSON()
-        const type=productJSON.productType
-        console.log(type)
+        const type=product.productType
 
         switch(Number(type)){
-            case 1: await InsertSLA_Specs({...data,'product':product.Id})
+            case 1:
+                
+                await InsertSLA_Specs({...data,'product':product.Id})
+                break;
 
-            case 2: await InsertFDM_Specs({...data,'product':product.Id})
+            case 2: 
+                await InsertFDM_Specs({...data,'product':product.Id})
+                break;
 
-            case 3: await InsertLeaserCutter_Specs({...data,'product':product.Id})
+            case 3:
+                await InsertLeaserCutter_Specs({...data,'product':product.Id})
+                break;
             
-            case 4:await InsertScanner_Specs({...data,'product':product.Id})
+            case 4:
+                const hasSpecs=await testFunction(product.Id)
+                if(hasSpecs) throw new createError.UnprocessableEntity("This product already have an specs")
+                await InsertScanner_Specs({...data,'product':product.Id})
+                break;
         }
-        
-        await InsertScanner_Specs({...data,'product':product.Id})
         
 
         
@@ -58,10 +65,9 @@ export const CreateSpecs= async(req,res,next)=>{
             "msg":"Specs is added",
         })
 
-
-
     } catch (error) {
         console.log(`from Create Specs ${error}`)
+        next(error)
     }
 }
 
@@ -97,4 +103,16 @@ export const getTopFive=async(req,res,next)=>{
     }
 }
 
+export const test=async(req,res,next)=>{
+    try {
+        const testVar=await testFunction(req.body.id)
+        console.log(testVar)
+        res.send(testVar)
+
+
+    } catch (error) {
+        console.log(error)
+        next(error)
+    }
+}
 

@@ -21,31 +21,20 @@ const DB =()=>{
         foreignKey:'product',
         allowNull:false
     })
-
-    // FDM_specs.belongsTo(Product,{
-    //     foreignKey:"product"
-    // })
-    // SLA_specs.belongsTo(Product,{
-    //     foreignKey:'product'
-    // })
-
-    // Scanner_specs.belongsTo(Product,{
-    //     foreignKey:'product'
-    // })
-    // LeaserCutter_specs.belongsTo(Product,{
-    //     foreignKey:'product'
-    // })
     Product.hasOne(FDM_specs,{
         foreignKey:"product",
         allowNull:false
     })
     Product.hasOne(SLA_specs,{
         foreignKey:"product",
-        allowNull:false
+        allowNull:false,
+        unique:true
     })
+
     Product.hasOne(Scanner_specs,{
         foreignKey:"product",
-        allowNull:false
+        allowNull:false,
+        unique:true
     })
     Product.hasOne(LeaserCutter_specs,{
         foreignKey:"product",

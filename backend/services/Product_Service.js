@@ -4,7 +4,6 @@ import SLA_specs from "../Models/SLA_specs.js"
 import FDM_specs from "../Models/FDM_specs.js"
 import Scanner_specs from "../Models/Scanner_specs.js"
 import LeaserCutter_specs from "../Models/leaserCutter.js"
-import { where } from "sequelize"
 
 
 
@@ -125,5 +124,70 @@ export const findTopFive=async()=>{
         return result
     } catch (error) {
         next(error)
+    }
+}
+
+
+export const getScannerSpecs=async(id)=>{
+    try {
+        const instance=await Product.findByPk(id,{include:Scanner_specs})
+        return instance.scanner
+
+
+    } catch (error) {
+        console.log("From Product Services testFunction "+error)
+        return error
+    }
+}
+
+export const getFDMSpecs=async(id)=>{
+    try {
+        const instance=await Product.findByPk(id,{include:FDM_specs})
+        return instance
+
+
+    } catch (error) {
+        console.log("From Product Services testFunction "+error)
+        return error
+    }
+}
+
+export const getSLASpecs=async(id)=>{
+    try {
+        const instance=await Product.findByPk(id,{include:SLA_specs})
+        return instance
+
+
+    } catch (error) {
+        console.log("From Product Services testFunction "+error)
+        return error
+    }
+}
+
+export const getLeaserCutterSpecs=async(id)=>{
+    try {
+        const instance=await Product.findByPk(id,{include:LeaserCutter_specs})
+        return instance
+
+
+    } catch (error) {
+        console.log("From Product Services testFunction "+error)
+        return error
+    }
+}
+
+
+
+
+
+export const testFunction=async(id)=>{
+    try {
+        const instance=await Product.findByPk(id,{include:Scanner_specs})
+        return instance.scanner
+
+
+    } catch (error) {
+        console.log("From Product Services testFunction "+error)
+        return error
     }
 }
