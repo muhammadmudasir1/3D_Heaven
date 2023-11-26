@@ -15,7 +15,35 @@ export const allproduct=async ()=>{
 
 export const insertProduct=async(data)=>{
     try {
-        const instance=await Product.create({...data,"product_Type_Id":data.type})
+        
+        // return data
+        console.log(data)
+        const QueryData={
+        product_name:data.product_name,
+        manufacturer:data.manufacturer,
+        weight:data.weight,
+        diemention:data.diemention,
+        price_rating:data.price_rating,
+        innovation_rating:data.innovation_rating,
+        software_rating:data.software_rating,
+        customer_service_rating:data.customer_service_rating,
+        processing_rating:data.processing_rating,
+        overall_rating:data.overall_rating,
+        pros:data.pros,
+        cons:data.cons,
+        technical_data:data.technical_data,
+        first_impression:data.first_impression,
+        images:data.images,
+        thumbnail:data.thumbnail,
+        scope_of_delivery_discription:data.scope_of_delivery_discription,
+        scope_of_delivery_images:data.scope_of_delivery_images,
+        include_in_BestDeals:data.include_in_BestDeals,
+        productType:data.ProductType
+        
+        }
+        console.log(QueryData)
+
+        const instance=await Product.create(QueryData)
         if (data.varients){
             if (Array.isArray(data.varients)){
                 const varients=await Product.findAll({where:{Id:data.varients}})

@@ -153,19 +153,30 @@ const Product=sequelize.define("Product",{
         type:DataTypes.ARRAY(DataTypes.STRING),
         allowNull:true
     },
-    product_Type_Id: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-          model: 'Product_Types',
-          key: 'Id' 
-        }
-      },
     include_in_BestDeals:{
         type:DataTypes.BOOLEAN,
         defaultValue:false,
+    },
+    productType:{
+        type:DataTypes.INTEGER,
+        allowNull:false,
+        validate:{
+            isInt:{
+                msg:"must be integer"
+            },
+            min:{
+                args:[1],
+                msg:"invalid Product Type"
+            },
+            max:{
+                args:[4],
+                msg:"invalid Product Type"
+            }
+        }
     }
-    })
+
+    }
+    )
 
 
 export default Product

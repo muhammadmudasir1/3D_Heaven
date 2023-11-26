@@ -1,4 +1,3 @@
-import { createProductType } from "../services/ProductType_Services.js";
 import { allproduct,insertProduct,InsertFDM_Specs,InsertLeaserCutter_Specs,InsertSLA_Specs,InsertScanner_Specs, findProductById} from "../services/Product_Service.js";
 import createError from 'http-errors'
 
@@ -18,6 +17,7 @@ export const allProducts=async(req,res,next)=>{
 export const CreateProduct=async(req,res,next)=>{
     try {
         const data=req.body
+        console.log(data.type)
         const Product_Id=await insertProduct(data)
         res.send({
             "msg":"Product is added",
@@ -30,16 +30,6 @@ export const CreateProduct=async(req,res,next)=>{
     }
 }
 
-export const CreateType=async(req,res,next)=>{
-    try {
-        const name=req.body.name
-        const data= await createProductType(name.toUpperCase())
-        res.send(data)
-        
-    } catch (error) {
-        next(createError.UnprocessableEntity("Type is already exist or invalid input"))
-    }
-}
 
 export const CreateSpecs= async(req,res,next)=>{
     try {
@@ -47,33 +37,23 @@ export const CreateSpecs= async(req,res,next)=>{
         const data=req.body
         const product=await findProductById(req.body.Product_Id)
         const productJSON=await product.toJSON()
-        const type=productJSON.product_Type_Id
-        
-        let result
-        switch(type){
-            case 1:
-                console.log("from SLA")
-                result=await InsertSLA_Specs({...data,"product":product.Id})
-                break;
-                
-            case 2:
-                console.log("from FDM")
-                result=await InsertFDM_Specs({...data,"product":product.Id})
-                break;
-            case 3:
-                console.log("from Leaser")
-                result=await InsertLeaserCutter_Specs({...data,"product":product.Id})
-                break;
-            case 4:
-                console.log("from Scanner")
-                result=await InsertScanner_Specs({...data,"product":product.Id})
-                break;
-            
+        const type=productJSON.productType
+        console.log(type)
 
+        switch(Number(type)){
+            case 1: await InsertSLA_Specs({...data,'product':product.Id})
+
+            case 2: await InsertFDM_Specs({...data,'product':product.Id})
+
+            case 3: await InsertLeaserCutter_Specs({...data,'product':product.Id})
+            
+            case 4:await InsertScanner_Specs({...data,'product':product.Id})
         }
         
+        await InsertScanner_Specs({...data,'product':product.Id})
+        
 
-        console.log(type)
+        
         res.send({
             "msg":"Specs is added",
         })

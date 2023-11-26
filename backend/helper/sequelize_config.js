@@ -9,11 +9,19 @@ import { Sequelize } from "sequelize";
 //     database: process.env.DATABASE_NAME
 // })
 
-    export const sequelize = new Sequelize( "3D_Heaven",'postgres', 'pgadmin', {
-  host: 'localhost',
+//     export const sequelize = new Sequelize( "3D_Heaven",'postgres', 'pgadmin', {
+//   host: 'localhost',
+//   dialect: 'postgres',
+// });
+export const sequelize = new Sequelize("postgresql://mudasir:IyDUngSNgFe8lEhtdLF7KA@cloud-wyvern-7338.8nk.cockroachlabs.cloud:26257/defaultdb?sslmode=verify-full",{
+  host: 'pg-3b1a190d-mudasirabbasi26-73b5.a.aivencloud.com',
   dialect: 'postgres',
+  dialectOptions: {
+    ssl: {
+      require: true, // This is where you specify SSL mode
+      rejectUnauthorized: false // Use this option if you are connecting to a self-signed certificate
+    }}
 });
-
 // module.exports = { sequelize };
 
 

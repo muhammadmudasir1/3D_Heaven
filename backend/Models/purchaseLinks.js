@@ -24,6 +24,10 @@ const purchaseLinks=sequelize.define("purchaseLinks",{
     discription:{
         type:DataTypes.TEXT
     }
-})
+},
+{
+    timestamps:false
+}
+)
 
 export default purchaseLinks;

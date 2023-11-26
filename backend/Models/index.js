@@ -1,5 +1,4 @@
 import Product from "./Product.js";
-import Product_Type from "./Product_Type.js";
 import ProductVariant from "./ProductVarient.js";
 import FDM_specs from "./FDM_specs.js";
 import SLA_specs from "./SLA_specs.js";
@@ -10,18 +9,14 @@ import purchaseLinks from "./purchaseLinks.js";
 const DB =()=>{
     const Models={
         Product,
-        Product_Type,
         FDM_specs,
         SLA_specs,
         LeaserCutter_specs,
         Scanner_specs,
         purchaseLinks
         
-    }
-    Product.belongsTo(Product_Type, {
-        foreignKey: 'product_Type_Id',
-        as: 'productType'
-      });
+    };
+
     purchaseLinks.hasOne(Product,{
         foreignKey:'product',
         allowNull:false
