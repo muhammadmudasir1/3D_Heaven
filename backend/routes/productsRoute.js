@@ -1,5 +1,5 @@
 import express from 'express'
-import {CreateProduct, CreateSpecs, allProducts,getProductsByCategory,changeProductPriority} from "../controller/productController.js"
+import {CreateProduct, CreateSpecs, allProducts,getProductsByCategory,changeProductPriority, getTopFive} from "../controller/productController.js"
 import upload from '../middleware/fileUpload.js'
 import handleCreateProductImages from '../helper/handleCreateProductImages.js'
 
@@ -8,7 +8,7 @@ const route = express.Router()
 
 
 route.get('/',allProducts)
-route.get('/:type',getProductsByCategory)
+route.get('/type/:type',getProductsByCategory)
 route.post('/',upload.fields([
     {name:"images",maxCount:5},
     {name:"thumbnail"},
@@ -17,6 +17,7 @@ route.post('/',upload.fields([
 
 route.post('/Specs',CreateSpecs)
 route.post('/changePriority',changeProductPriority)
+route.get('/topFive',getTopFive)
 
 
 export default route

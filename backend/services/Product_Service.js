@@ -114,3 +114,16 @@ export const changePriority=async(id,newPriority)=>{
     return {newPriority}
 
 }
+
+export const findTopFive=async()=>{
+    try {
+        const result =await Product.findAll({
+            order:[['priority','DESC']],
+            limit:5,
+            attributes:['Id','thumbnail','product_name','priority']
+        })
+        return result
+    } catch (error) {
+        next(error)
+    }
+}

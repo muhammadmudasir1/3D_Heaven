@@ -1,4 +1,4 @@
-import { allproduct,insertProduct,InsertFDM_Specs,InsertLeaserCutter_Specs,InsertSLA_Specs,InsertScanner_Specs, findProductById, findProductsbyType, changePriority} from "../services/Product_Service.js";
+import { allproduct,insertProduct,InsertFDM_Specs,InsertLeaserCutter_Specs,InsertSLA_Specs,InsertScanner_Specs, findProductById, findProductsbyType, changePriority, findTopFive} from "../services/Product_Service.js";
 import createError from 'http-errors'
 
 
@@ -84,6 +84,15 @@ export const changeProductPriority=async (req,res,next)=>{
     }
     catch (error){
         console.log(error)
+        next(error)
+    }
+}
+
+export const getTopFive=async(req,res,next)=>{
+    try {
+        const result = await findTopFive()
+        res.send(result)
+    } catch (error) {
         next(error)
     }
 }
