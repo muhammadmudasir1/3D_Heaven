@@ -4,11 +4,20 @@ import SLA_specs from "../Models/SLA_specs.js"
 import FDM_specs from "../Models/FDM_specs.js"
 import Scanner_specs from "../Models/Scanner_specs.js"
 import LeaserCutter_specs from "../Models/leaserCutter.js"
+import { where } from "sequelize"
 
 
 
 export const allproduct=async ()=>{
     return await Product.findAndCountAll()
+}
+
+
+export const findProductsbyType= async(type)=>{
+    return await Product.findAll({
+        where:{productType:type},
+        attributes:['Id', 'product_name', 'manufacturer','discription','price','thumbnail','include_in_BestDeals']
+    },)
 }
 
 
@@ -54,6 +63,8 @@ export const insertProduct=async(data)=>{
                 console.log(varients)
             }
         }
+
+
         return instance.Id
         
     } catch (error) {
@@ -82,4 +93,24 @@ export const InsertLeaserCutter_Specs=async(data)=>{
 export const findProductById=async(id)=>{
     const instance=await Product.findByPk(id)
     return instance
+}
+
+
+
+export const changePriority=async(id,newPriority)=>{
+    console.log(newPriority)
+    const oldSets=await Product.findOne({where:{priority:newPriority}})
+    const currentProduct=await Product.findByPk(id)
+    if (oldSets && oldSets.priority<=5){
+        await currentProduct.update({priority:newPriority})
+        await currentProduct.save()
+        await oldSets.update({priority:0})
+        await oldSets.save()
+    }
+    else{
+        await currentProduct.update({priority:newPriority})
+        await currentProduct.save()
+    }
+    return {newPriority}
+
 }

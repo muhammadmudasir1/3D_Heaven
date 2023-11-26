@@ -1,4 +1,4 @@
-import { allproduct,insertProduct,InsertFDM_Specs,InsertLeaserCutter_Specs,InsertSLA_Specs,InsertScanner_Specs, findProductById} from "../services/Product_Service.js";
+import { allproduct,insertProduct,InsertFDM_Specs,InsertLeaserCutter_Specs,InsertSLA_Specs,InsertScanner_Specs, findProductById, findProductsbyType, changePriority} from "../services/Product_Service.js";
 import createError from 'http-errors'
 
 
@@ -64,3 +64,28 @@ export const CreateSpecs= async(req,res,next)=>{
         console.log(`from Create Specs ${error}`)
     }
 }
+
+
+export const getProductsByCategory=async (req,res,next)=>{
+    try {
+        const result=await findProductsbyType(req.params.type)
+        res.send(result)
+    } catch (error) {
+        console.log(error)
+        next(error)
+    }
+}
+
+
+export const changeProductPriority=async (req,res,next)=>{
+    try {
+        const result=await changePriority(req.body.productId,req.body.priority)
+        res.send(result)
+    }
+    catch (error){
+        console.log(error)
+        next(error)
+    }
+}
+
+
