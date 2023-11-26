@@ -143,7 +143,7 @@ export const getScannerSpecs=async(id)=>{
 export const getFDMSpecs=async(id)=>{
     try {
         const instance=await Product.findByPk(id,{include:FDM_specs})
-        return instance
+        return instance.FDM
 
 
     } catch (error) {
@@ -155,7 +155,7 @@ export const getFDMSpecs=async(id)=>{
 export const getSLASpecs=async(id)=>{
     try {
         const instance=await Product.findByPk(id,{include:SLA_specs})
-        return instance
+        return instance.SLA
 
 
     } catch (error) {
@@ -167,7 +167,7 @@ export const getSLASpecs=async(id)=>{
 export const getLeaserCutterSpecs=async(id)=>{
     try {
         const instance=await Product.findByPk(id,{include:LeaserCutter_specs})
-        return instance
+        return instance.LeaserCutter
 
 
     } catch (error) {
