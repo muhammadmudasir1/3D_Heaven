@@ -142,7 +142,6 @@ const Product = sequelize.define("Product", {
     },
     thumbnail: {
         type: DataTypes.STRING,
-        allowNull: false
 
     },
     scope_of_delivery_discription: {
@@ -169,7 +168,7 @@ const Product = sequelize.define("Product", {
                 msg: "invalid Product Type"
             },
             max: {
-                args: [4],
+                args: [5],
                 msg: "invalid Product Type"
             }
         }
@@ -193,8 +192,6 @@ const Product = sequelize.define("Product", {
             },
         },
     }
-
-
 }
 )
 

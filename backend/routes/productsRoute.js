@@ -1,5 +1,16 @@
 import express from 'express'
-import {CreateProduct, CreateSpecs, allProducts,getProductsByCategory,changeProductPriority, getTopFive, test} from "../controller/productController.js"
+import {
+    CreateProduct,
+    CreateSpecs,
+    allProducts,
+    getProductsByCategory,
+    changeProductPriority,
+    getTopFive,
+    test,
+    Search,
+    SingleProduct
+} from "../controller/productController.js"
+
 import upload from '../middleware/fileUpload.js'
 import handleCreateProductImages from '../helper/handleCreateProductImages.js'
 
@@ -19,6 +30,8 @@ route.post('/Specs',CreateSpecs)
 route.post('/changePriority',changeProductPriority)
 route.get('/topFive',getTopFive)
 route.post('/test',test)
+route.get('/search',Search)
+route.get('/:productId',SingleProduct)
 
 
 export default route

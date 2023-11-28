@@ -28,7 +28,8 @@ const DB =()=>{
     Product.hasOne(SLA_specs,{
         foreignKey:"product",
         allowNull:false,
-        unique:true
+        unique:true,
+        onDelete:'CASCADE'
     })
 
     Product.hasOne(Scanner_specs,{

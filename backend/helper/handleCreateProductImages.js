@@ -8,9 +8,7 @@ const handleCreateProductImages =(req,res,next)=>{
         req.files.scope_of_delivery_images.map((image)=>{
             return image.filename
         }):null
-        console.log(req.files)
         if(req.files.thumbnail){
-            console.log("from thumbnail")
             thumbnail=req.files.thumbnail[0].filename
             images=req.files.images ? (req.files.images).map((image)=>{
                 return image.filename

@@ -16,7 +16,9 @@ import {
     getLeaserCutterSpecs,
     getSLASpecs,
     getScannerSpecs,
-    testFunction
+    testFunction,
+    SearchInProduct,
+    productDetail
 } from "../services/Product_Service.js";
 import createError from 'http-errors'
 
@@ -35,7 +37,6 @@ export const allProducts = async (req, res, next) => {
 export const CreateProduct = async (req, res, next) => {
     try {
         const data = req.body
-        console.log(data.type)
         const Product_Id = await insertProduct(data)
         res.send({
             "msg": "Product is added",
@@ -88,9 +89,6 @@ export const CreateSpecs = async (req, res, next) => {
 
             }
         }
-
-
-
         res.send({
             "msg": "Specs is added",
         })
@@ -138,11 +136,30 @@ export const test = async (req, res, next) => {
         const testVar = await testFunction(req.body.id)
         console.log(testVar)
         res.send(testVar)
-
-
-    } catch (error) {
+    }
+    catch (error) {
         console.log(error)
         next(error)
     }
 }
 
+export const Search=async (req,res,next) =>{
+    try {
+        const data=req.query.q
+        const searchItems= await SearchInProduct(data)
+        res.send(searchItems)
+    } catch (error) {
+        next(error)
+    }
+}
+
+export const SingleProduct=async (req,res,next)=>{
+    try {
+        const Id=req.params.productId
+        const product = await productDetail(Id)
+        res.send(product)
+    } catch (error) {
+        console.log(error)
+        next(error)
+    }
+}
