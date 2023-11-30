@@ -1,6 +1,6 @@
 import createError from "http-errors"
 
-const handleCreateProductImages =(req,res,next)=>{
+const handleUpdateProductImages =(req,res,next)=>{
     try {
         let thumbnail=''
         let images=''
@@ -20,9 +20,6 @@ const handleCreateProductImages =(req,res,next)=>{
                 return image.filename
             }):null
         }
-        else{
-            throw new Error(createError.BadRequest("Thumbnail is compulsory"))
-        }
         req.body={
             ...req.body,
             thumbnail,
@@ -39,4 +36,4 @@ const handleCreateProductImages =(req,res,next)=>{
 
 }
 
-export default handleCreateProductImages
+export default handleUpdateProductImages

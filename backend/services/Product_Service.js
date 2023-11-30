@@ -6,6 +6,7 @@ import Scanner_specs from "../Models/Scanner_specs.js"
 import LeaserCutter_specs from "../Models/leaserCutter.js"
 import { Op } from "sequelize"
 import ProductVariant from "../Models/ProductVarient.js"
+import purchaseLinks from "../Models/purchaseLinks.js"
 
 
 export const allproduct = async () => {
@@ -24,33 +25,10 @@ export const findProductsbyType = async (type) => {
 
 export const insertProduct = async (data) => {
     try {
-        // const QueryData={
-        // product_name:data.product_name,
-        // manufacturer:data.manufacturer,
-        // weight:data.weight,
-        // diemention:data.diemention,
-        // price_rating:data.price_rating,
-        // innovation_rating:data.innovation_rating,
-        // software_rating:data.software_rating,
-        // customer_service_rating:data.customer_service_rating,
-        // processing_rating:data.processing_rating,
-        // overall_rating:data.overall_rating,
-        // pros:data.pros,
-        // cons:data.cons,
-        // technical_data:data.technical_data,
-        // first_impression:data.first_impression,
-        // images:data.images,
-        // thumbnail:data.thumbnail,
-        // scope_of_delivery_discription:data.scope_of_delivery_discription,
-        // scope_of_delivery_images:data.scope_of_delivery_images,
-        // include_in_BestDeals:data.include_in_BestDeals,
-        // productType:data.productType
-        // }
         const instance = await Product.create(data)
         if (data.variants) {
             const variants = await instance.addVariant(data.variants)
             variants.map(async (variant) => {
-                console.log("create Variant")
                 const tempProduct = await Product.findByPk(variant.dataValues.variantId)
                 tempProduct.addVariant(instance.Id)
             })
@@ -216,9 +194,11 @@ export const productDetail = async (id) => {
                         FDM_specs,
                         Scanner_specs,
                         LeaserCutter_specs,
+                        purchaseLinks,
                         {
                             'association': 'variants',
-                            include: [SLA_specs, FDM_specs, Scanner_specs, LeaserCutter_specs],
+                            attributes:['Id', 'product_name'],
+                            include: [SLA_specs, FDM_specs, Scanner_specs, LeaserCutter_specs]
                         }
                     ]
             })
@@ -229,4 +209,23 @@ export const productDetail = async (id) => {
         return error
 
     }
+}
+
+export const addPurchaseLink=async(data)=>{
+    try {
+        const links=data.purchaseLinks
+        const product=await Product.findByPk(data.productId)
+        links.map(async(link)=>{
+            await purchaseLinks.create({...link,"product":product.Id})
+        })
+        
+        
+        return product 
+    } catch (error) {
+        console.log(`from Product Servics addPurchaseLink ${error}`)
+    }
+}
+
+export const updateProduct=async(data)=>{
+    return data
 }

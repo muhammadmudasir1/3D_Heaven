@@ -17,10 +17,11 @@ const DB =()=>{
         
     };
 
-    purchaseLinks.hasOne(Product,{
-        foreignKey:'product',
+    Product.hasMany(purchaseLinks,{
+        foreignKey:"product",
         allowNull:false
     })
+
     Product.hasOne(FDM_specs,{
         foreignKey:"product",
         allowNull:false

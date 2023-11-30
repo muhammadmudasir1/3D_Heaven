@@ -8,11 +8,14 @@ import {
     getTopFive,
     test,
     Search,
-    SingleProduct
+    SingleProduct,
+    addPurchaseLinkToProduct,
+    UpdateProduct,
 } from "../controller/productController.js"
 
 import upload from '../middleware/fileUpload.js'
 import handleCreateProductImages from '../helper/handleCreateProductImages.js'
+import handleUpdateProductImages from '../helper/handleUpdateProductImages.js'
 
 
 const route = express.Router()
@@ -32,6 +35,14 @@ route.get('/topFive',getTopFive)
 route.post('/test',test)
 route.get('/search',Search)
 route.get('/:productId',SingleProduct)
+route.post('/addPurchaseLinks',addPurchaseLinkToProduct)
+
+route.patch('/:id',upload.fields([
+    {name:"images",maxCount:5},
+    {name:"thumbnail"},
+    {name:"scope_of_delivery_images", maxCount:5}
+]),handleUpdateProductImages,UpdateProduct)
+
 
 
 export default route

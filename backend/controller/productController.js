@@ -18,7 +18,9 @@ import {
     getScannerSpecs,
     testFunction,
     SearchInProduct,
-    productDetail
+    productDetail,
+    addPurchaseLink,
+    updateProduct
 } from "../services/Product_Service.js";
 import createError from 'http-errors'
 
@@ -143,23 +145,45 @@ export const test = async (req, res, next) => {
     }
 }
 
-export const Search=async (req,res,next) =>{
+export const Search = async (req, res, next) => {
     try {
-        const data=req.query.q
-        const searchItems= await SearchInProduct(data)
+        const data = req.query.q
+        const searchItems = await SearchInProduct(data)
         res.send(searchItems)
     } catch (error) {
         next(error)
     }
 }
 
-export const SingleProduct=async (req,res,next)=>{
+export const SingleProduct = async (req, res, next) => {
     try {
-        const Id=req.params.productId
+        const Id = req.params.productId
         const product = await productDetail(Id)
         res.send(product)
     } catch (error) {
         console.log(error)
         next(error)
+    }
+}
+
+export const addPurchaseLinkToProduct = async (req, res, next) => {
+    try {
+        const data = req.body
+        const result = await addPurchaseLink(data)
+        res.send("Purchase Link is added")
+
+    } catch (error) {
+        console.log(error)
+        next(error)
+    }
+}
+
+
+export const UpdateProduct=async(req,res,next)=>{
+    try {
+        const data=req.body
+        await updateProduct(data)
+    } catch (error) {
+        next(error)        
     }
 }
