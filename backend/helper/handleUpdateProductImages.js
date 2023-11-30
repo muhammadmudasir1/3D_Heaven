@@ -2,6 +2,7 @@ import createError from "http-errors"
 
 const handleUpdateProductImages =(req,res,next)=>{
     try {
+        
         let thumbnail=''
         let images=''
         let scope_of_delivery_images= req.files.scope_of_delivery_images?

@@ -226,6 +226,64 @@ export const addPurchaseLink=async(data)=>{
     }
 }
 
-export const updateProduct=async(data)=>{
+export const updateProduct  =async(id,data)=>{
+    await Product.update(data,
+        {where:{
+            Id:id
+        }})
     return data
+}
+
+export const updatePurchaseLink=async(productId,purchaseId,data)=>{
+    const result=await purchaseLinks.update(data,{
+        where:{
+            product:productId,
+            purchaseLinksId:purchaseId
+        }
+    })
+    return result
+
+}
+
+export const insertVariant=async(productId,variantsList)=>{
+    const instance=await Product.findByPk(productId)
+    if (variantsList) {
+        const variants = await instance.addVariant(variantsList)
+        variants.map(async (variant) => {
+            const tempProduct = await Product.findByPk(variant.dataValues.variantId)
+            tempProduct.addVariant(instance.Id)
+        })
+    }
+    return true
+}
+
+export const removeProduct=async(productId)=>{
+    return await Product.destroy({
+        where:{
+            Id:productId
+        }
+    })
+}
+
+export const removeVariant=async(product,variant)=>{
+    return await ProductVariant.destroy({
+        where:
+        {
+        [Op.or]:[
+            {
+                productId:product,
+                variantId:variant 
+
+            },
+            {
+                productId:variant,
+                variantId:product 
+
+            },
+            
+        ]
+
+        }
+    
+    })
 }

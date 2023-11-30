@@ -20,7 +20,11 @@ import {
     SearchInProduct,
     productDetail,
     addPurchaseLink,
-    updateProduct
+    updateProduct,
+    updatePurchaseLink,
+    insertVariant,
+    removeProduct,
+    removeVariant
 } from "../services/Product_Service.js";
 import createError from 'http-errors'
 
@@ -182,8 +186,61 @@ export const addPurchaseLinkToProduct = async (req, res, next) => {
 export const UpdateProduct=async(req,res,next)=>{
     try {
         const data=req.body
-        await updateProduct(data)
+        const productId=req.params.id
+        if (data.productType){
+            throw createError.UnprocessableEntity("product Type Cant be change")
+        }
+        const returnData=await updateProduct(productId,data)
+        res.send(returnData)
+        
     } catch (error) {
         next(error)        
+    }
+}
+
+export const UpdatePurchaseLink=async(req,res,next)=>{
+    try {
+        const {purchaseLinkId,productId}=req.body
+        const data=req.body.data
+        const result=await updatePurchaseLink(productId,purchaseLinkId,data)
+        res.send(result)
+    } catch (error) {
+        console.log(error)
+        next(error)
+    }
+}
+
+export const addVariant=async(req,res,next)=>{
+    try {
+        const {productId,variants}=req.body
+        const result =await insertVariant(productId,variants)
+        res.send(result)
+    } catch (error) {
+        console.log(error)
+        next(error)
+        
+    }
+}
+
+export const deleteProduct = async(req,res,next)=>{
+    try {
+        const productId=req.params.id
+        await removeProduct(productId)
+        res.send({"msg":"Product is delete"})
+    } catch (error) {
+        console.log(error)
+        next(error)
+    }
+}
+
+
+export const deleteVariant=async(req,res,next)=>{
+    try {
+        const {productId,variantId}=req.body
+        await removeVariant(productId,variantId)
+        res.send({"msg":"variant is removed"})
+    } catch (error) {
+        console.log(error)
+        next(error)
     }
 }
