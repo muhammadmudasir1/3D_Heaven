@@ -3,6 +3,7 @@ import express from 'express'
 import morgan from 'morgan'
 import createError from 'http-errors'
 import route from './routes/productsRoute.js'
+import newsRoutes from './routes/newsRoutes.js'
 import DB from './Models/index.js'
 import {connectDatabase, sequelize} from './helper/sequelize_config.js'
 
@@ -17,7 +18,7 @@ app.use(express.static('upload'))
 app.use(morgan('dev'))
 
 app.use('/products',route)
-
+app.use('/news',newsRoutes)
 
 
 app.use((req,res,next)=>{

@@ -15,6 +15,7 @@ import {
     addVariant,
     deleteProduct,
     deleteVariant,
+    getManufacturerList,
 } from "../controller/productController.js"
 
 import upload from '../middleware/fileUpload.js'
@@ -41,7 +42,9 @@ const route = express.Router()
     route.post('/addPurchaseLinks',addPurchaseLinkToProduct)
     route.post('/addVariants',addVariant)
     route.delete('/removeVariant',deleteVariant)
+    route.get('/manufacturerList/:type',getManufacturerList)
     route.delete('/:id',deleteProduct)
+    
     
     route.patch("/updatePurchaseLink",UpdatePurchaseLink)
     route.patch('/:id',upload.fields([

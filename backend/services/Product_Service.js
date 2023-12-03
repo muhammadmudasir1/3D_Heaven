@@ -4,7 +4,7 @@ import SLA_specs from "../Models/SLA_specs.js"
 import FDM_specs from "../Models/FDM_specs.js"
 import Scanner_specs from "../Models/Scanner_specs.js"
 import LeaserCutter_specs from "../Models/leaserCutter.js"
-import { Op } from "sequelize"
+import { Op,fn,col } from "sequelize"
 import ProductVariant from "../Models/ProductVarient.js"
 import purchaseLinks from "../Models/purchaseLinks.js"
 
@@ -286,4 +286,14 @@ export const removeVariant=async(product,variant)=>{
         }
     
     })
+}
+
+export const manufacturerList=async(type)=>{
+    const manufacturer = await Product.findAll({where:{
+        productType:type
+    },
+    attributes:[fn('DISTINCT', col('manufacturer')),'manufacturer']
+
+})
+    return manufacturer
 }

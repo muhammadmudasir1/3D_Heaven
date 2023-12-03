@@ -1,6 +1,3 @@
-
-
-
 import {
     allproduct,
     insertProduct,
@@ -24,8 +21,10 @@ import {
     updatePurchaseLink,
     insertVariant,
     removeProduct,
-    removeVariant
+    removeVariant,
+    manufacturerList
 } from "../services/Product_Service.js";
+
 import createError from 'http-errors'
 
 
@@ -239,6 +238,16 @@ export const deleteVariant=async(req,res,next)=>{
         const {productId,variantId}=req.body
         await removeVariant(productId,variantId)
         res.send({"msg":"variant is removed"})
+    } catch (error) {
+        console.log(error)
+        next(error)
+    }
+}
+
+export const getManufacturerList=async(req,res,next)=>{
+    try {
+        const products = await manufacturerList(req.params.type)
+        res.send(products)
     } catch (error) {
         console.log(error)
         next(error)
