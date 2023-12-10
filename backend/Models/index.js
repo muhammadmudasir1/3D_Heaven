@@ -5,6 +5,7 @@ import SLA_specs from "./SLA_specs.js";
 import LeaserCutter_specs from "./leaserCutter.js";
 import Scanner_specs from "./Scanner_specs.js";
 import purchaseLinks from "./purchaseLinks.js";
+import User from "./User.js";
 
 const DB =()=>{
     const Models={
@@ -13,7 +14,8 @@ const DB =()=>{
         SLA_specs,
         LeaserCutter_specs,
         Scanner_specs,
-        purchaseLinks
+        purchaseLinks,
+        User
         
     };
 

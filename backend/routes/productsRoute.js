@@ -16,6 +16,7 @@ import {
     deleteProduct,
     deleteVariant,
     getManufacturerList,
+    searchByType,
 } from "../controller/productController.js"
 
 import upload from '../middleware/fileUpload.js'
@@ -38,6 +39,7 @@ const route = express.Router()
     route.get('/topFive',getTopFive)
     route.post('/test',test)
     route.get('/search',Search)
+    route.post('/searchbytype/:type',searchByType)
     route.get('/:productId',SingleProduct)
     route.post('/addPurchaseLinks',addPurchaseLinkToProduct)
     route.post('/addVariants',addVariant)

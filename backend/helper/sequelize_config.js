@@ -12,6 +12,7 @@ import { Sequelize } from "sequelize";
     export const sequelize = new Sequelize( "3D_Heaven",'postgres', 'pgadmin', {
   host: 'localhost',
   dialect: 'postgres',
+  logging:false
 });
 // export const sequelize = new Sequelize("postgresql://mudasir:IyDUngSNgFe8lEhtdLF7KA@cloud-wyvern-7338.8nk.cockroachlabs.cloud:26257/defaultdb?sslmode=verify-full",{
 //   host: 'pg-3b1a190d-mudasirabbasi26-73b5.a.aivencloud.com',

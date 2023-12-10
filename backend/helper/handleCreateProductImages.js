@@ -4,10 +4,16 @@ const handleCreateProductImages =(req,res,next)=>{
     try {
         let thumbnail=''
         let images=''
+        console.log(" ")
+        console.log(" ")
+        console.log(req)
+        console.log(" ")
+        console.log(" ")
         let scope_of_delivery_images= req.files.scope_of_delivery_images?
         req.files.scope_of_delivery_images.map((image)=>{
             return image.filename
         }):null
+
         if(req.files.thumbnail){
             thumbnail=req.files.thumbnail[0].filename
             images=req.files.images ? (req.files.images).map((image)=>{
@@ -21,7 +27,7 @@ const handleCreateProductImages =(req,res,next)=>{
             }):null
         }
         else{
-            throw new Error(createError.BadRequest("Thumbnail is compulsory"))
+            throw createError.BadRequest("Thumbnail is compulsory")
         }
         req.body={
             ...req.body,

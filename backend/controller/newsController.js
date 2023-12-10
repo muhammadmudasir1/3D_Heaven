@@ -55,7 +55,9 @@ export const NewsById=async(req,res,next)=>{
     }
 }
 
-export const deleteNews=(req,res,next)=>{
+export const deleteNews=async (req,res,next)=>{
+    const Id=req.params.id
+    const result=await removeNews(Id)
     res.send("This is delete News")
 }
 

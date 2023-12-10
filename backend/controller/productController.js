@@ -22,7 +22,8 @@ import {
     insertVariant,
     removeProduct,
     removeVariant,
-    manufacturerList
+    manufacturerList,
+    SearchInProductByType
 } from "../services/Product_Service.js";
 
 import createError from 'http-errors'
@@ -157,6 +158,19 @@ export const Search = async (req, res, next) => {
         next(error)
     }
 }
+
+export const searchByType = async (req, res, next) => {
+    try {
+        const type=req.params.type
+        const data = req.body.query;
+        console.log(data)
+        const searchItems = await SearchInProductByType(data,type)
+        res.send(searchItems)
+    } catch (error) {
+        next(error)
+    }
+}
+
 
 export const SingleProduct = async (req, res, next) => {
     try {

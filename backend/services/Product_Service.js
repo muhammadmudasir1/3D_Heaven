@@ -161,7 +161,8 @@ export const SearchInProduct = async (SearchQuery) => {
                         }
                     }
                 ]
-            }
+            },
+            
         })
         return products
     } catch (error) {
@@ -169,6 +170,37 @@ export const SearchInProduct = async (SearchQuery) => {
         return error
     }
 }
+
+export const SearchInProductByType = async (SearchQuery,type) => {
+    // console.log(SearchQuery)
+    // let searchtest="S"
+    try {
+        const products = await Product.findAll({
+            where: {
+                [Op.or]: [
+                    {
+                        product_name: {
+                            [Op.iLike]: `%${SearchQuery}%`
+                        }
+                    },
+                    {
+                        manufacturer: {
+                            [Op.iLike]: `%${SearchQuery}%`
+                        }
+                    }
+                ],
+                productType:type   
+            },
+            attributes: ['Id', 'product_name', 'thumbnail']
+        })
+        console.log(products)
+        return products
+    } catch (error) {
+        console.log(`From Product Services SearchInProducts ${error}`)
+        return error
+    }
+}
+
 
 
 
