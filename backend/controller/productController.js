@@ -139,9 +139,8 @@ export const getTopFive = async (req, res, next) => {
 
 export const test = async (req, res, next) => {
     try {
-        const testVar = await testFunction(req.body.id)
-        console.log(testVar)
-        res.send(testVar)
+        console.log(req)
+        res.send("this is filled")
     }
     catch (error) {
         console.log(error)

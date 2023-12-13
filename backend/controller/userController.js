@@ -97,5 +97,8 @@ export const generateTokens= async (req,res,next)=>{
 }
 
 export const deleteUser=(req,res,next)=>{
-    res.send("This is create User")
+    const {refreshToken}=req.cookies
+    const {userId}=jwt.verify(refreshToken,process.env.REFRESH_TOKEN_SECRATE)
+    redisClient.del(userId)
+    res.send("User is Logout")
 }

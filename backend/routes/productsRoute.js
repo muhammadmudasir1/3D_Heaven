@@ -37,7 +37,9 @@ const route = express.Router()
     route.post('/Specs',CreateSpecs)
     route.post('/changePriority',changeProductPriority)
     route.get('/topFive',getTopFive)
-    route.post('/test',test)
+    route.post('/test',upload.fields([
+        {name:"images"}
+    ]),test)
     route.get('/search',Search)
     route.post('/searchbytype/:type',searchByType)
     route.get('/:productId',SingleProduct)
