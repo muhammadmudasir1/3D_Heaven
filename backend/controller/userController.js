@@ -1,5 +1,5 @@
 import { AccessTokenGenerator ,RefreshTokenGenerator} from "../helper/JWTGenerator.js"
-import { getUserById, getUserByEmail } from "../services/User_Service.js"
+import { getUserById, getUserByEmail,CreateUserService} from "../services/User_Service.js"
 import CreateError from "http-errors"
 import {validate} from "email-validator"
 import bcrypt from 'bcrypt'
@@ -33,6 +33,7 @@ export const createUser=async(req,res,next)=>{
         res.send(result)
         
     } catch (error) {
+        console.log(error)
         next(CreateError.BadRequest(error.errors[0].message))
     }
 }

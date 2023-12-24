@@ -6,7 +6,6 @@ import {
     getProductsByCategory,
     changeProductPriority,
     getTopFive,
-    test,
     Search,
     SingleProduct,
     addPurchaseLinkToProduct,
@@ -28,18 +27,15 @@ const route = express.Router()
     
     route.get('/',allProducts)
     route.get('/type/:type',getProductsByCategory)
-    route.post('/',upload.fields([
-        {name:"images",maxCount:5},
-        {name:"thumbnail"},
-        {name:"scope_of_delivery_images", maxCount:5}
-    ]),handleCreateProductImages,CreateProduct)
     
     route.post('/Specs',CreateSpecs)
     route.post('/changePriority',changeProductPriority)
     route.get('/topFive',getTopFive)
-    route.post('/test',upload.fields([
-        {name:"images"}
-    ]),test)
+    route.post('/',upload.fields([
+        {name:"thumbnail"},
+        {name:"images"},
+        {name:"sdImages"}
+    ]),CreateProduct)
     route.get('/search',Search)
     route.post('/searchbytype/:type',searchByType)
     route.get('/:productId',SingleProduct)

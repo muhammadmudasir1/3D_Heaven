@@ -7,6 +7,7 @@ import LeaserCutter_specs from "../Models/leaserCutter.js"
 import { Op,fn,col } from "sequelize"
 import ProductVariant from "../Models/ProductVarient.js"
 import purchaseLinks from "../Models/purchaseLinks.js"
+import ProductImages from "../Models/productImages.js"
 
 
 export const allproduct = async () => {
@@ -24,21 +25,29 @@ export const findProductsbyType = async (type) => {
 
 
 export const insertProduct = async (data) => {
-    try {
         const instance = await Product.create(data)
         if (data.variants) {
+
             const variants = await instance.addVariant(data.variants)
             variants.map(async (variant) => {
                 const tempProduct = await Product.findByPk(variant.dataValues.variantId)
                 tempProduct.addVariant(instance.Id)
             })
         }
-        return instance.Id
+        await ProductImages.create({path:data.thumbnail[0],role:1,ProductId:instance.Id})
+        if(data.images){
+            data.images.forEach(async (image) => {
+                await ProductImages.create({path:image,role:2,ProductId:instance.Id})
+            });
+        }
+        if(data.sdImages){
+            data.sdImages.forEach(async(image)=>{
+                await ProductImages.create({path:image,role:3,ProductId:instance.Id})
+            })
 
-    } catch (error) {
-        console.error(`from Product_service/insertProduct ${error}`)
-        throw new Error(CreateError.InternalServerError())
-    }
+        }
+
+        return instance.Id
 }
 
 export const InsertSLA_Specs = async (data) => {
@@ -66,7 +75,6 @@ export const findProductById = async (id) => {
 
 
 export const changePriority = async (id, newPriority) => {
-    console.log(newPriority)
     const oldSets = await Product.findOne({ where: { priority: newPriority } })
     const currentProduct = await Product.findByPk(id)
     if (oldSets && oldSets.priority <= 5) {
@@ -172,8 +180,6 @@ export const SearchInProduct = async (SearchQuery) => {
 }
 
 export const SearchInProductByType = async (SearchQuery,type) => {
-    // console.log(SearchQuery)
-    // let searchtest="S"
     try {
         const products = await Product.findAll({
             where: {
@@ -191,9 +197,16 @@ export const SearchInProductByType = async (SearchQuery,type) => {
                 ],
                 productType:type   
             },
-            attributes: ['Id', 'product_name', 'thumbnail']
+            attributes: ['Id', 'product_name'],
+            include:{
+                model:ProductImages,
+                where:{
+                    role:1
+                },
+                attributes:['path']
+
+            }
         })
-        console.log(products)
         return products
     } catch (error) {
         console.log(`From Product Services SearchInProducts ${error}`)
@@ -218,7 +231,6 @@ export const testFunction = async (id) => {
 }
 
 export const productDetail = async (id) => {
-    try {
         const instance = await Product.findByPk(id,
             {
                 include:
@@ -236,11 +248,6 @@ export const productDetail = async (id) => {
             })
         
         return instance
-    } catch (error) {
-        console.log(`From Product Service ProductDetail ${error}`)
-        return error
-
-    }
 }
 
 export const addPurchaseLink=async(data)=>{

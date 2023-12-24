@@ -6,6 +6,7 @@ import LeaserCutter_specs from "./leaserCutter.js";
 import Scanner_specs from "./Scanner_specs.js";
 import purchaseLinks from "./purchaseLinks.js";
 import User from "./User.js";
+import ProductImages from "./productImages.js";
 
 const DB =()=>{
     const Models={
@@ -15,18 +16,24 @@ const DB =()=>{
         LeaserCutter_specs,
         Scanner_specs,
         purchaseLinks,
-        User
+        User,
+        ProductImages
+        
         
     };
 
     Product.hasMany(purchaseLinks,{
         foreignKey:"product",
-        allowNull:false
+        allowNull:false,
+        unique:true,
+        onDelete:'CASCADE'
     })
 
     Product.hasOne(FDM_specs,{
         foreignKey:"product",
-        allowNull:false
+        allowNull:false,
+        unique:true,
+        onDelete:'CASCADE'
     })
     Product.hasOne(SLA_specs,{
         foreignKey:"product",
@@ -38,11 +45,19 @@ const DB =()=>{
     Product.hasOne(Scanner_specs,{
         foreignKey:"product",
         allowNull:false,
-        unique:true
+        unique:true,
+        onDelete:'CASCADE'
     })
     Product.hasOne(LeaserCutter_specs,{
         foreignKey:"product",
-        allowNull:false
+        allowNull:false,
+
+        unique:true,
+        onDelete:'CASCADE'
+    })
+    Product.hasMany(ProductImages,{
+        allowNull:false,
+        onDelete:'CASCADE'
     })
     
     

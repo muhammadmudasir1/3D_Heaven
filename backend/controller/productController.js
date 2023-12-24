@@ -25,8 +25,86 @@ import {
     manufacturerList,
     SearchInProductByType
 } from "../services/Product_Service.js";
-
 import createError from 'http-errors'
+
+export const CreateProduct = async (req, res, next) => {
+    try {
+        let thumbnail=req.files.thumbnail
+        let images=req.files.images
+        let sdImages=req.files.sdImages
+        const product_name=req.body.product_name
+        const manufacturer=req.body.manufacturer
+        const price_rating=Number(req.body.price_rating)
+        const innovation_rating=Number(req.body.innovation_rating)
+        const software_rating=Number(req.body.software_rating)
+        const customer_service_rating=Number(req.body.customer_service_rating)
+        const processing_rating=Number(req.body.processing_rating)
+        const overall_rating=Math.round((price_rating+innovation_rating+software_rating+customer_service_rating+processing_rating)/5)
+        const productType=Number(req.body.productType)
+        const scope_of_delivery_discription=req.body.scope_of_delivery_discription
+        const include_in_BestDeals=req.body.include_in_BestDeals
+        const discription=req.body.discription
+        const variants=req.body.variants
+
+        if(thumbnail){
+            createError.BadRequest("Thumbnail is compulsory")
+        }
+        if(product_name){
+            createError.BadRequest("Product Name is compulsory")
+        }
+        if(productType){
+            createError.BadRequest("Product Type is compulsory")
+        }
+        if(Array.isArray(thumbnail)){
+            thumbnail=thumbnail.map((image)=>{
+                return image.filename
+            })
+        }
+        if(images){
+            images=images.map((image)=>{
+                return image.filename
+            })
+
+        }
+        if(sdImages){
+            sdImages=sdImages.map((image)=>{
+                return image.filename
+            })
+
+        }
+        const data={
+            product_name,
+            manufacturer,
+            price_rating,
+            innovation_rating,
+            software_rating,
+            customer_service_rating,
+            processing_rating,
+            overall_rating,
+            scope_of_delivery_discription,
+            include_in_BestDeals,
+            productType,
+            discription,
+            images,
+            sdImages,
+            thumbnail,
+            variants
+        }
+        console.log(req.body)
+        const result=await insertProduct(data)
+
+        res.send(result)
+    }
+    catch (error) {
+        console.log(error)
+        next(error)
+    }
+}
+
+
+
+
+
 
 
 export const allProducts = async (req, res, next) => {
@@ -40,20 +118,7 @@ export const allProducts = async (req, res, next) => {
     }
 }
 
-export const CreateProduct = async (req, res, next) => {
-    try {
-        const data = req.body
-        const Product_Id = await insertProduct(data)
-        res.send({
-            "msg": "Product is added",
-            Product_Id
-        })
 
-    } catch (error) {
-        console.log(error)
-        next(createError.UnprocessableEntity("invalid Data"))
-    }
-}
 
 
 export const CreateSpecs = async (req, res, next) => {
@@ -61,7 +126,6 @@ export const CreateSpecs = async (req, res, next) => {
 
         const data = req.body
         const product = await findProductById(req.body.Product_Id)
-        console.log(req.body.Product_Id)
         const type = product.productType
 
         switch (Number(type)) {
@@ -81,7 +145,6 @@ export const CreateSpecs = async (req, res, next) => {
 
             case 3: {
                 const hasSpecs = await getLeaserCutterSpecs(product.Id)
-                console.log(hasSpecs)
                 if (hasSpecs) throw new createError.UnprocessableEntity("This product already have an specs")
                 await InsertLeaserCutter_Specs({ ...data, 'product': product.Id })
                 break;
@@ -137,16 +200,6 @@ export const getTopFive = async (req, res, next) => {
     }
 }
 
-export const test = async (req, res, next) => {
-    try {
-        console.log(req)
-        res.send("this is filled")
-    }
-    catch (error) {
-        console.log(error)
-        next(error)
-    }
-}
 
 export const Search = async (req, res, next) => {
     try {
@@ -162,7 +215,6 @@ export const searchByType = async (req, res, next) => {
     try {
         const type=req.params.type
         const data = req.body.query;
-        console.log(data)
         const searchItems = await SearchInProductByType(data,type)
         res.send(searchItems)
     } catch (error) {
@@ -175,6 +227,10 @@ export const SingleProduct = async (req, res, next) => {
     try {
         const Id = req.params.productId
         const product = await productDetail(Id)
+        if(!product){
+           
+            throw createError.BadRequest("invalid Product Id")
+        }
         res.send(product)
     } catch (error) {
         console.log(error)
