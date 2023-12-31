@@ -4,13 +4,14 @@ import { DataTypes, UUID } from "sequelize";
 const purchaseLinks = sequelize.define("purchaseLinks", {
     purchaseLinksId: {
         type: DataTypes.UUID,
-        defaultValue: DataTypes.UUIDV4
+        defaultValue: DataTypes.UUIDV4,
+        primaryKey:true
     },
-    siteName: {
-        type: DataTypes.STRING,
+    siteType: {
+        type: DataTypes.SMALLINT,
         allowNull: false,
     },
-    links: {
+    link: {
         type: DataTypes.STRING,
         allowNull: false,
     },
@@ -27,13 +28,21 @@ const purchaseLinks = sequelize.define("purchaseLinks", {
         type: DataTypes.FLOAT,
         allowNull: false
     },
-    price: {
+    originalPrice: {
         type: DataTypes.FLOAT,
-        allowNull: false,
+    },
+    unit:{
+        type:DataTypes.STRING,
+        allowNull:false
+    },
+
+    retrivePriceFlag:{
+        type:DataTypes.BOOLEAN,
+        allowNull:false
     }
 },
     {
-        timestamps: false
+        timestamps: true
     }
 )
 

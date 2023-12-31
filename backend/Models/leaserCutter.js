@@ -2,10 +2,10 @@ import { sequelize } from "../helper/sequelize_config.js";
 import { DataTypes } from "sequelize";
 
 const LeaserCutter_specs=sequelize.define("LeaserCutter",{
-    leaserPower:{
+    laserPower:{
         type:DataTypes.STRING
     },
-    leaserWavelength:{
+    laserWavelength:{
         type:DataTypes.STRING
     },
     engravingAccuracy:{
@@ -26,7 +26,7 @@ const LeaserCutter_specs=sequelize.define("LeaserCutter",{
     powerSupplyOutputPower:{
         type:DataTypes.STRING
     },
-    leaserSoftware:{
+    laserSoftware:{
         type:DataTypes.STRING
     },
     engravingMaterial:{

@@ -1,3 +1,20 @@
+import AmazonScrap from "../helper/AmazonScrap.js"
+import Ebay from "../helper/EbayScrap.js"
+import GeeksBuyingScrap from "../helper/GeeksBuyingScrap.js"
+import TomTopScrap from "../helper/TomTopScrap.js"
+import JakeScrap from "../helper/JakeScrap.js"
+import OrturScrap from "../helper/OrturScrap.js"
+import AnyCubicScrap from "../helper/AnyCubic.js"
+import ArtilleryScrap from "../helper/ArtilleryScrap.js"
+import BambuLabScrap from "../helper/ScrapBambulab.js"
+import CrealityScrap from "../helper/CrealityScrap.js"
+import ElegooScrap from "../helper/ElegoScrap.js"
+import RevopointScrap from "../helper/RevopointScrap.js"
+import SculpfunScrap from "../helper/SculpfunScrap.js"
+import TwoTreesScrap from "../helper/TwoTreesScrap.js"
+import QidiTechScrap from "../helper/QidiTechScrap.js"
+
+
 import {
     allproduct,
     insertProduct,
@@ -23,7 +40,9 @@ import {
     removeProduct,
     removeVariant,
     manufacturerList,
-    SearchInProductByType
+    SearchInProductByType,
+    findPurchaseLinks,
+    getPurchaseLinkPrice
 } from "../services/Product_Service.js";
 import createError from 'http-errors'
 
@@ -102,11 +121,6 @@ export const CreateProduct = async (req, res, next) => {
 }
 
 
-
-
-
-
-
 export const allProducts = async (req, res, next) => {
     try {
         const data = await allproduct()
@@ -117,8 +131,6 @@ export const allProducts = async (req, res, next) => {
         next(createError.InternalServerError)
     }
 }
-
-
 
 
 export const CreateSpecs = async (req, res, next) => {
@@ -191,6 +203,7 @@ export const changeProductPriority = async (req, res, next) => {
     }
 }
 
+
 export const getTopFive = async (req, res, next) => {
     try {
         const result = await findTopFive()
@@ -210,6 +223,7 @@ export const Search = async (req, res, next) => {
         next(error)
     }
 }
+
 
 export const searchByType = async (req, res, next) => {
     try {
@@ -238,12 +252,97 @@ export const SingleProduct = async (req, res, next) => {
     }
 }
 
+
 export const addPurchaseLinkToProduct = async (req, res, next) => {
     try {
         const data = req.body
         const result = await addPurchaseLink(data)
         res.send("Purchase Link is added")
 
+    } catch (error) {
+        console.log(error)
+        next(error)
+    }
+}
+
+
+export const getPurchaseLinks=async (req,res,next)=>{
+    try {
+        const productId =req.params.productId
+        const result = await findPurchaseLinks(productId)
+        res.send(result)
+    } catch (error) {
+        next(error)
+    }
+}
+
+export const getPrice=async (req,res,next)=>{
+    const check=async(type,link)=>{
+        let result
+        switch (type){
+            case 1:
+                result =await AmazonScrap(link)
+                break;
+            case 2:
+                result =await Ebay(link)
+                break;
+            case 3:
+                result=await GeeksBuyingScrap(link)
+                break;
+            case 4:
+                result=await TomTopScrap(link)
+                break;
+            case 5:
+                result=await JakeScrap(link)
+                break;
+            case 6:
+                result=await OrturScrap(link)
+                break;
+            case 7:
+                result=await AnyCubicScrap(link)
+                break;
+            case 8:
+                result=await ArtilleryScrap(link)
+                break;
+            case 9:
+                result=await BambuLabScrap(link)
+                break;
+            case 10:
+                result=await CrealityScrap(link)
+                break;
+            case 11:
+                result=await ElegooScrap(link)
+                break;
+            case 12:
+                result=await RevopointScrap(link)
+                break;
+            case 13:
+                result=await SculpfunScrap(link)
+                break;
+            case 14:
+                result=await TwoTreesScrap(link)
+                break;
+            case 15:
+                result=await QidiTechScrap(link)
+                break;
+            default:
+                next(createError.UnprocessableEntity("Invalid Sites"))
+            }   
+        return result
+    }
+    try {
+        const purchaseLinkId=req.params.PurchaseLinkId
+        const oldPrices=await getPurchaseLinkPrice(purchaseLinkId)
+        const updateTime=new Date(oldPrices.updatedAt)
+        let currentTime=new Date()
+        if((currentTime-updateTime)>5*60*60){
+            const response=await check(oldPrices.siteType,oldPrices.link)
+            res.send(response)
+        }
+        else{
+
+            res.send("is False")
+        }
     } catch (error) {
         console.log(error)
         next(error)
@@ -266,6 +365,7 @@ export const UpdateProduct=async(req,res,next)=>{
     }
 }
 
+
 export const UpdatePurchaseLink=async(req,res,next)=>{
     try {
         const {purchaseLinkId,productId}=req.body
@@ -278,6 +378,7 @@ export const UpdatePurchaseLink=async(req,res,next)=>{
     }
 }
 
+
 export const addVariant=async(req,res,next)=>{
     try {
         const {productId,variants}=req.body
@@ -289,6 +390,7 @@ export const addVariant=async(req,res,next)=>{
         
     }
 }
+
 
 export const deleteProduct = async(req,res,next)=>{
     try {
@@ -313,6 +415,7 @@ export const deleteVariant=async(req,res,next)=>{
     }
 }
 
+
 export const getManufacturerList=async(req,res,next)=>{
     try {
         const products = await manufacturerList(req.params.type)
@@ -320,5 +423,69 @@ export const getManufacturerList=async(req,res,next)=>{
     } catch (error) {
         console.log(error)
         next(error)
+    }
+}
+
+
+export const checkPurchaseLink=async(req,res,next)=>{
+    try {
+        let {siteType,link}=req.body
+        siteType=Number(siteType)
+        // console.log(Number(siteType))
+        let result
+        switch (siteType){
+            case 1:
+                result =await AmazonScrap(link)
+                break;
+            case 2:
+                result =await Ebay(link)
+                break;
+            case 3:
+                result=await GeeksBuyingScrap(link)
+                break;
+            case 4:
+                result=await TomTopScrap(link)
+                break;
+            case 5:
+                result=await JakeScrap(link)
+                break;
+            case 6:
+                result=await OrturScrap(link)
+                break;
+            case 7:
+                result=await AnyCubicScrap(link)
+                break;
+            case 8:
+                result=await ArtilleryScrap(link)
+                break;
+            case 9:
+                result=await BambuLabScrap(link)
+                break;
+            case 10:
+                result=await CrealityScrap(link)
+                break;
+            case 11:
+                result=await ElegooScrap(link)
+                break;
+            case 12:
+                result=await RevopointScrap(link)
+                break;
+            case 13:
+                result=await SculpfunScrap(link)
+                break;
+            case 14:
+                result=await TwoTreesScrap(link)
+                break;
+            case 15:
+                result=await QidiTechScrap(link)
+                break;
+            default:
+                next(createError.UnprocessableEntity("Invalid Sites"))
+            }   
+        res.send(result)
+        
+    } catch (error) {
+        console.log("from product Controller check Purchase Link " + error)
+        next(error)   
     }
 }

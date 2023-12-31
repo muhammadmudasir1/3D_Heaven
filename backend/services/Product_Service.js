@@ -23,11 +23,9 @@ export const findProductsbyType = async (type) => {
 }
 
 
-
 export const insertProduct = async (data) => {
         const instance = await Product.create(data)
-        if (data.variants) {
-
+        if (data.variants){
             const variants = await instance.addVariant(data.variants)
             variants.map(async (variant) => {
                 const tempProduct = await Product.findByPk(variant.dataValues.variantId)
@@ -50,28 +48,35 @@ export const insertProduct = async (data) => {
         return instance.Id
 }
 
+
 export const InsertSLA_Specs = async (data) => {
     const instance = await SLA_specs.create(data)
     return instance
 }
+
+
 export const InsertFDM_Specs = async (data) => {
     const instance = await FDM_specs.create(data)
     return instance
 }
+
+
 export const InsertScanner_Specs = async (data) => {
     const instance = await Scanner_specs.create(data)
     return instance
 }
+
+
 export const InsertLeaserCutter_Specs = async (data) => {
     const instance = await LeaserCutter_specs.create(data)
     return instance
 }
 
+
 export const findProductById = async (id) => {
     const instance = await Product.findByPk(id)
     return instance
 }
-
 
 
 export const changePriority = async (id, newPriority) => {
@@ -90,6 +95,7 @@ export const changePriority = async (id, newPriority) => {
     return { newPriority }
 
 }
+
 
 export const findTopFive = async () => {
     try {
@@ -117,6 +123,7 @@ export const getScannerSpecs = async (id) => {
     }
 }
 
+
 export const getFDMSpecs = async (id) => {
     try {
         const instance = await Product.findByPk(id, { include: FDM_specs })
@@ -128,6 +135,7 @@ export const getFDMSpecs = async (id) => {
         return error
     }
 }
+
 
 export const getSLASpecs = async (id) => {
     try {
@@ -141,6 +149,7 @@ export const getSLASpecs = async (id) => {
     }
 }
 
+
 export const getLeaserCutterSpecs = async (id) => {
     try {
         const instance = await Product.findByPk(id, { include: LeaserCutter_specs })
@@ -152,6 +161,7 @@ export const getLeaserCutterSpecs = async (id) => {
         return error
     }
 }
+
 
 export const SearchInProduct = async (SearchQuery) => {
     try {
@@ -178,6 +188,7 @@ export const SearchInProduct = async (SearchQuery) => {
         return error
     }
 }
+
 
 export const SearchInProductByType = async (SearchQuery,type) => {
     try {
@@ -215,9 +226,6 @@ export const SearchInProductByType = async (SearchQuery,type) => {
 }
 
 
-
-
-
 export const testFunction = async (id) => {
     try {
         const instance = await Product.findByPk(id, { include: Scanner_specs })
@@ -229,6 +237,7 @@ export const testFunction = async (id) => {
         return error
     }
 }
+
 
 export const productDetail = async (id) => {
         const instance = await Product.findByPk(id,
@@ -250,20 +259,20 @@ export const productDetail = async (id) => {
         return instance
 }
 
+
 export const addPurchaseLink=async(data)=>{
     try {
-        const links=data.purchaseLinks
-        const product=await Product.findByPk(data.productId)
-        links.map(async(link)=>{
-            await purchaseLinks.create({...link,"product":product.Id})
-        })
-        
-        
-        return product 
+        const link=data.purchaseLink
+        const {id}=data.productId
+        const product=await Product.findByPk(id)
+        const result=await purchaseLinks.create({...link,"product":product.Id})
+        // console.log(productId)
+        return result
     } catch (error) {
         console.log(`from Product Servics addPurchaseLink ${error}`)
     }
 }
+
 
 export const updateProduct  =async(id,data)=>{
     await Product.update(data,
@@ -272,6 +281,7 @@ export const updateProduct  =async(id,data)=>{
         }})
     return data
 }
+
 
 export const updatePurchaseLink=async(productId,purchaseId,data)=>{
     const result=await purchaseLinks.update(data,{
@@ -283,6 +293,7 @@ export const updatePurchaseLink=async(productId,purchaseId,data)=>{
     return result
 
 }
+
 
 export const insertVariant=async(productId,variantsList)=>{
     const instance=await Product.findByPk(productId)
@@ -296,6 +307,7 @@ export const insertVariant=async(productId,variantsList)=>{
     return true
 }
 
+
 export const removeProduct=async(productId)=>{
     return await Product.destroy({
         where:{
@@ -303,6 +315,7 @@ export const removeProduct=async(productId)=>{
         }
     })
 }
+
 
 export const removeVariant=async(product,variant)=>{
     return await ProductVariant.destroy({
@@ -327,6 +340,7 @@ export const removeVariant=async(product,variant)=>{
     })
 }
 
+
 export const manufacturerList=async(type)=>{
     const manufacturer = await Product.findAll({where:{
         productType:type
@@ -335,4 +349,23 @@ export const manufacturerList=async(type)=>{
 
 })
     return manufacturer
+}
+
+export const findPurchaseLinks=async(id)=>{
+    const result=await purchaseLinks.findAll({
+        where:{
+            "product":id
+        },
+        attributes:["purchaseLinksId","siteType","link","title","coupon","discription","retrivePriceFlag"]
+    })
+    return result
+}
+
+export const getPurchaseLinkPrice=async(id)=>{
+    const result=await purchaseLinks.findByPk(id,
+        {
+            attributes:["discountedPrice","originalPrice","unit","updatedAt","siteType","link"]
+        })
+        return result
+
 }
