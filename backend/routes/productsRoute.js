@@ -18,12 +18,16 @@ import {
     searchByType,
     checkPurchaseLink,
     getPurchaseLinks,
-    getPrice
+    getPrice,
+    removePurchaseLink,
+    removeProductImage,
+    setThumbnail,
+    getAllProductImages,
+    addImages,
+    addSOCImages
 } from "../controller/productController.js"
 
 import upload from '../middleware/fileUpload.js'
-import handleCreateProductImages from '../helper/handleCreateProductImages.js'
-import handleUpdateProductImages from '../helper/handleUpdateProductImages.js'
 
 
 const route = express.Router()
@@ -44,19 +48,26 @@ const route = express.Router()
     route.get('/:productId',SingleProduct)
     route.post('/addPurchaseLinks',addPurchaseLinkToProduct)
     route.get('/PurchaseLinks/:productId',getPurchaseLinks)
+    route.delete('/PurchaseLinks/:PurchaseLinkId',removePurchaseLink)
     route.get('/Price/:PurchaseLinkId',getPrice)
     route.post('/addVariants',addVariant)
     route.delete('/removeVariant',deleteVariant)
     route.get('/manufacturerList/:type',getManufacturerList)
     route.delete('/:id',deleteProduct)
     route.post('/check', checkPurchaseLink)
-    
+    route.patch('/removeImage/:productId',removeProductImage)
+    route.get('/getImages/:productId',getAllProductImages)
     route.patch("/updatePurchaseLink",UpdatePurchaseLink)
-    route.patch('/:id',upload.fields([
-        {name:"images",maxCount:5},
-        {name:"thumbnail"},
-        {name:"scope_of_delivery_images", maxCount:5}
-    ]),handleUpdateProductImages,UpdateProduct)
+
+    route.patch('/addImages/:productId',upload.fields([
+        {name:"images",maxCount:5}
+    ]),addImages)
+    route.patch('/addsodimages/:productId',upload.fields([
+        {name:"images",maxCount:5}
+    ]),addSOCImages)
+    
+    route.patch('/changeThumbnail/:productId',setThumbnail)
+    
 
     
 
