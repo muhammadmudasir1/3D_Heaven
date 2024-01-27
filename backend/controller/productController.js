@@ -14,6 +14,7 @@ import SculpfunScrap from "../helper/SculpfunScrap.js"
 import TwoTreesScrap from "../helper/TwoTreesScrap.js"
 import QidiTechScrap from "../helper/QidiTechScrap.js"
 import { unlink } from "fs"
+import redisClient from "../helper/init_redis.js"
 
 
 import {
@@ -25,13 +26,10 @@ import {
     InsertScanner_Specs,
     findProductById,
     findProductsbyType,
-    changePriority,
-    findTopFive,
     getFDMSpecs,
     getLeaserCutterSpecs,
     getSLASpecs,
     getScannerSpecs,
-    testFunction,
     SearchInProduct,
     productDetail,
     addPurchaseLink,
@@ -50,7 +48,14 @@ import {
     deleteProductImage,
     findThumbnail,
     updateProductImage,
-    insertImages
+    insertImages,
+    updateSLA_Specs,
+    updateFDM_Specs,
+    updateLeaserCutter_Specs,
+    updateScanner_Specs,
+    CreateReview,
+    findReview,
+    changeReviews
 } from "../services/Product_Service.js";
 import createError from 'http-errors'
 import Product from "../Models/Product.js"
@@ -144,7 +149,6 @@ export const allProducts = async (req, res, next) => {
 
 export const CreateSpecs = async (req, res, next) => {
     try {
-
         const data = req.body
         const product = await findProductById(req.body.Product_Id)
         const type = product.productType
@@ -189,6 +193,61 @@ export const CreateSpecs = async (req, res, next) => {
     }
 }
 
+export const UpdateSpecs=async (req,res,next)=>{
+    try {
+        const specsId=req.params.specsId
+        const {product_id,productType,data}=req.body
+        
+        switch (Number(productType)){
+            case 1:{
+                const OldSpecs=await getSLASpecs(product_id)
+                if(!OldSpecs || OldSpecs.id != specsId){
+                    throw createError.UnprocessableEntity("Not Valid Product or Specs Id")
+                }
+                await updateSLA_Specs(specsId,data)
+                res.send({'msg':'Specs is updated'})
+                break;
+            }
+            case 2:{
+                const OldSpecs=await getFDMSpecs(product_id)
+                if(!OldSpecs || OldSpecs.id != specsId){
+                    throw createError.UnprocessableEntity("Not Valid Product or Specs Id")
+                }
+                await updateFDM_Specs(specsId,data)
+                res.send({'msg':'Specs is updated'})
+                break;
+            }
+            case 3:{
+                const OldSpecs=await getLeaserCutterSpecs(product_id)
+                if(!OldSpecs || OldSpecs.id != specsId){
+                    throw createError.UnprocessableEntity("Not Valid Product or Specs Id")
+                }
+                await updateLeaserCutter_Specs(specsId,data)
+                res.send({'msg':'Specs is updated'})
+                break;
+            }
+            case 4:{
+                const OldSpecs=await getScannerSpecs(product_id)
+                if(!OldSpecs || OldSpecs.id != specsId){
+                    throw createError.UnprocessableEntity("Not Valid Product or Specs Id")
+                }
+                await updateScanner_Specs(specsId,data)
+                res.send({'msg':'Specs is updated'})
+                break;
+            }
+            default:{
+                throw createError.UnprocessableEntity("This product not have any specs")
+            }
+        }
+
+        
+
+    } catch (error) {
+        console.log(error)
+        next(error)
+    }
+}
+
 
 export const getProductsByCategory = async (req, res, next) => {
     try {
@@ -201,31 +260,13 @@ export const getProductsByCategory = async (req, res, next) => {
 }
 
 
-export const changeProductPriority = async (req, res, next) => {
-    try {
-        const result = await changePriority(req.body.productId, req.body.priority)
-        res.send(result)
-    }
-    catch (error) {
-        console.log(error)
-        next(error)
-    }
-}
 
-
-export const getTopFive = async (req, res, next) => {
-    try {
-        const result = await findTopFive()
-        res.send(result)
-    } catch (error) {
-        next(error)
-    }
-}
 
 
 export const Search = async (req, res, next) => {
     try {
-        const data = req.query.q
+        const data = req.body.query
+        // console.log(data)
         const searchItems = await SearchInProduct(data)
         res.send(searchItems)
     } catch (error) {
@@ -395,7 +436,7 @@ export const getPrice = async (req, res, next) => {
 export const UpdateProduct = async (req, res, next) => {
     try {
         const data = req.body
-        const productId = req.params.id
+        const productId = req.params.productId
         if (data.productType) {
             throw createError.UnprocessableEntity("product Type Cant be change")
         }
@@ -403,6 +444,7 @@ export const UpdateProduct = async (req, res, next) => {
         res.send(returnData)
 
     } catch (error) {
+        console.log(error)
         next(error)
     }
 }
@@ -702,4 +744,68 @@ export const addSOCImages = async (req, res, next) => {
         next(error)
     }
 
+}
+
+export const addReview=async (req,res,next)=>{
+    try{
+        const productId=req.params.productId
+        const data=req.body
+        const result= await CreateReview(productId,data)
+        res.send("ok")
+    }
+    catch(error) {
+        console.log(error)
+        next(error)
+    }
+}
+
+export const getReview=async (req,res,next)=>{
+    try{
+        const productId=req.params.productId
+        const result= await findReview(productId)
+        res.send(result)
+    }
+    catch(error) {
+        console.log(error)
+        next(error)
+    }
+}
+
+export const updateReview=async(req,res,next)=>{
+    try{
+        const productId=req.params.productId
+        const data=req.body
+        const result= await changeReviews(productId,data)
+        res.send(result)
+    }
+    catch(error) {
+        next(error)
+    }
+}
+
+export const setTopFive=async(req,res,next)=>{
+    try {
+        const products=req.body.products
+        const productsString = JSON.stringify(products);
+        await redisClient.set("topfive", productsString);
+       res.send(req.body.products) 
+    } catch (error) {
+        console.log(error)
+        next(error)
+    }
+}
+
+export const getTopFive=async(req,res,next)=>{
+    try {
+        let products=await redisClient.get('topfive')
+        products=await JSON.parse(products)
+        let result=[]
+        for(let id of products){
+            const product=await findProductById(id)
+            result.push(product)
+        }
+        res.send(result)
+    } catch (error) {
+        console.log(error)   
+    }
 }

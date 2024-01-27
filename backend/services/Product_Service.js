@@ -8,6 +8,8 @@ import { Op, fn, col, where } from "sequelize"
 import ProductVariant from "../Models/ProductVarient.js"
 import purchaseLinks from "../Models/purchaseLinks.js"
 import ProductImages from "../Models/productImages.js"
+import Sequelize from "sequelize"
+import Review from "../Models/Review.js"
 
 
 
@@ -19,8 +21,16 @@ export const allproduct = async () => {
 export const findProductsbyType = async (type) => {
     return await Product.findAll({
         where: { productType: type },
-        attributes: ['Id', 'product_name', 'manufacturer', 'discription', 'price', 'thumbnail', 'include_in_BestDeals']
-    },)
+        attributes: ['Id', 'product_name', 'manufacturer', 'discription', 'price', 'include_in_BestDeals'],
+        include: {
+            model: ProductImages,
+            where: {
+                role: 1
+            },
+            attributes: ['path']
+
+        }
+    })
 }
 
 
@@ -73,42 +83,58 @@ export const InsertLeaserCutter_Specs = async (data) => {
     return instance
 }
 
-
-export const findProductById = async (id) => {
-    const instance = await Product.findByPk(id)
+export const updateSLA_Specs = async (specsId,data) => {
+    const instance = await SLA_specs.update(data,{
+        where:{
+            id:specsId
+        }
+    })
+    console.log(instance)
     return instance
 }
 
 
-export const changePriority = async (id, newPriority) => {
-    const oldSets = await Product.findOne({ where: { priority: newPriority } })
-    const currentProduct = await Product.findByPk(id)
-    if (oldSets && oldSets.priority <= 5) {
-        await currentProduct.update({ priority: newPriority })
-        await currentProduct.save()
-        await oldSets.update({ priority: 0 })
-        await oldSets.save()
-    }
-    else {
-        await currentProduct.update({ priority: newPriority })
-        await currentProduct.save()
-    }
-    return { newPriority }
-
+export const updateFDM_Specs = async (specsId,data) => {
+    console.log(data)
+    const instance = await FDM_specs.update(data,{
+        where:{
+            id:specsId
+        }
+    })
+    return instance
 }
 
 
-export const findTopFive = async () => {
-    try {
-        const result = await Product.findAll({
-            order: [['priority', 'DESC']],
-            limit: 5,
-            attributes: ['Id', 'thumbnail', 'product_name', 'priority']
-        })
-        return result
-    } catch (error) {
-        next(error)
-    }
+export const updateScanner_Specs = async (specsId,data) => {
+    const instance = await Scanner_specs.update(data,{
+        where:{
+            id:specsId
+        }
+    })
+    return instance
+}
+
+
+export const updateLeaserCutter_Specs = async (specsId,data) => {
+    console.log(data)
+    const instance = await LeaserCutter_specs.update(data,{
+        where:{
+            id:specsId
+        }
+    })
+    return instance
+}
+
+
+export const findProductById = async (id) => {
+    const instance = await Product.findByPk(id,{
+        include: {
+            model: ProductImages,
+            attributes:['path','role']
+
+        }
+    })
+    return instance
 }
 
 
@@ -164,25 +190,37 @@ export const getLeaserCutterSpecs = async (id) => {
 }
 
 
+
+
 export const SearchInProduct = async (SearchQuery) => {
     try {
+        console.log("search " + SearchQuery )
         const products = await Product.findAll({
             where: {
                 [Op.or]: [
                     {
                         product_name: {
-                            [Op.iLike]: `${SearchQuery}`
+                            [Op.iLike]: `%${SearchQuery}%`
                         }
                     },
                     {
                         manufacturer: {
-                            [Op.iLike]: `${SearchQuery}`
+                            [Op.iLike]: `%${SearchQuery}%`
                         }
                     }
                 ]
             },
+            attributes: ['Id', 'product_name','overall_rating','discription',"productType"],
+            include: {
+                model: ProductImages,
+                where: {
+                    role: 1
+                },
+                attributes: ['path']
 
+            }
         })
+        console.log(products)
         return products
     } catch (error) {
         console.log(`From Product Services SearchInProducts ${error}`)
@@ -209,7 +247,7 @@ export const SearchInProductByType = async (SearchQuery, type) => {
                 ],
                 productType: type
             },
-            attributes: ['Id', 'product_name'],
+            attributes: ['Id', 'product_name','overall_rating','discription'],
             include: {
                 model: ProductImages,
                 where: {
@@ -264,20 +302,18 @@ export const productDetail = async (id) => {
     return instance
 }
 
-
-
-
-
-
-
 export const updateProduct = async (id, data) => {
-    await Product.update(data,
+    const overall_rating = Math.round((data.price_rating + data.innovation_rating + data.software_rating + data.customer_service_rating + data.processing_rating) / 5)
+    data['overall_rating']=overall_rating
+    console.log(data)
+    const result = await Product.update(data,
         {
             where: {
                 Id: id
             }
         })
-    return data
+
+    return result
 }
 
 
@@ -297,6 +333,7 @@ export const insertVariant = async (productId, variantsList) => {
     const instance = await Product.findByPk(productId)
     if (variantsList) {
         const variants = await instance.addVariant(variantsList)
+        console.log(variants)
         variants.map(async (variant) => {
             const tempProduct = await Product.findByPk(variant.dataValues.variantId)
             tempProduct.addVariant(instance.Id)
@@ -382,12 +419,10 @@ export const addPurchaseLink = async (data) => {
     const purchaseLinksId = data.purchaseLink.purchaseLinkId
     const link = data.purchaseLink
     const id = data.productId
-    console.log(purchaseLinksId)
     let result
     if (purchaseLinksId) {
         const hasLink = await purchaseLinks.findByPk(purchaseLinksId)
         if (hasLink) {
-            console.log("at update")
             result = await purchaseLinks.update({ ...link }, {
                 where: {
                     purchaseLinksId: purchaseLinksId
@@ -407,7 +442,27 @@ export const addPurchaseLink = async (data) => {
             throw Error("Product is not Found")
         }
     }
-    // console.log(productId)
+    let links = await purchaseLinks.findAll({
+        where: {
+            "product": id
+        }
+    })
+    links.sort((a, b) => {
+        if (a.discountedPrice > b.discountedPrice) {
+            return 1
+        }
+        if (a.discountedPrice < b.discountedPrice) {
+            return -1
+        }
+        return 0
+    })
+
+    Product.update({ "price": links[0].discountedPrice, "unit": links[0].unit }, {
+        where: {
+            Id: id
+        }
+    })
+
     return result
 }
 
@@ -421,43 +476,66 @@ export const deletePurchaseLink = async (id) => {
     })
 }
 
-export const getProductImageById=async (id) =>{
-    const Image=await ProductImages.findByPk(id)
+export const getProductImageById = async (id) => {
+    const Image = await ProductImages.findByPk(id)
     return Image
 }
 
-export const deleteProductImage=async (imageId)=>{
+export const deleteProductImage = async (imageId) => {
     const result = await ProductImages.destroy({
-        where:{
-            id:imageId
+        where: {
+            id: imageId
         }
     })
     return result
 }
-export const updateProductImage=async(imageId,fields)=>{
-    const [updateRowCount,updatedFields]=await ProductImages.update(fields,{
-        where:{
-            id:imageId
+export const updateProductImage = async (imageId, fields) => {
+    const [updateRowCount, updatedFields] = await ProductImages.update(fields, {
+        where: {
+            id: imageId
         },
-        returning:true
+        returning: true
     })
     return updatedFields
 }
 
-export const findThumbnail=async(productId)=>{
-    const result=await ProductImages.findAll({
-        where:{
-            ProductId:productId,
-            role:1
+export const findThumbnail = async (productId) => {
+    const result = await ProductImages.findAll({
+        where: {
+            ProductId: productId,
+            role: 1
         }
     })
     return result
 }
 
-export const insertImages=async(productId,images,imageRole)=>{
-    const result=images.map(async (image) => {
-        await ProductImages.create({ path: image, role: imageRole, ProductId:productId })
+export const insertImages = async (productId, images, imageRole) => {
+    const result = images.map(async (image) => {
+        await ProductImages.create({ path: image, role: imageRole, ProductId: productId })
     });
     console.log(result)
     return true
+}
+
+export const CreateReview=async (productId,data)=>{
+    const result=await Review.create({...data,product:productId})
+    return result
+}
+
+export const findReview=async (productId)=>{
+    const result=await Review.findAll({
+        where:{
+            product:productId
+        }
+    })
+    return result
+}
+
+export const changeReviews=async (productId,data)=>{
+    const result=await Review.update(data,{
+        where:{
+            product:productId
+        }
+    })
+    return result
 }

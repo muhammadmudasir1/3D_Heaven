@@ -97,7 +97,7 @@ const Product = sequelize.define("Product", {
         }
     },
     overall_rating: {
-        type: DataTypes.SMALLINT,
+        type: DataTypes.FLOAT,
         validate: {
             isInt: {
                 msg: "must be integer overall"
@@ -142,6 +142,9 @@ const Product = sequelize.define("Product", {
     },
     price: {
         type: DataTypes.FLOAT
+    },
+    unit:{
+        type:DataTypes.STRING
     },
     isActive:{
         type:DataTypes.BOOLEAN,

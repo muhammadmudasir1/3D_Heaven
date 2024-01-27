@@ -7,6 +7,7 @@ import Scanner_specs from "./Scanner_specs.js";
 import purchaseLinks from "./purchaseLinks.js";
 import User from "./User.js";
 import ProductImages from "./productImages.js";
+import Review from "./Review.js";
 
 const DB =()=>{
     const Models={
@@ -17,9 +18,8 @@ const DB =()=>{
         Scanner_specs,
         purchaseLinks,
         User,
-        ProductImages
-        
-        
+        ProductImages,
+        Review
     };
 
     Product.hasMany(purchaseLinks,{
@@ -54,6 +54,10 @@ const DB =()=>{
 
         unique:true,
         onDelete:'CASCADE'
+    })
+    Product.hasOne(Review,{
+        foreignKey:"product",
+        allowNull:true
     })
     Product.hasMany(ProductImages,{
         allowNull:false,

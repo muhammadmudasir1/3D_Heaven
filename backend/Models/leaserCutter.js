@@ -14,7 +14,7 @@ const LeaserCutter_specs=sequelize.define("LeaserCutter",{
     engravingArea:{
         type:DataTypes.STRING
     },
-    foucingMethod:{
+    focusingMethod:{
         type:DataTypes.STRING
     },
     airAssistCompressor:{
@@ -33,9 +33,6 @@ const LeaserCutter_specs=sequelize.define("LeaserCutter",{
         type:DataTypes.STRING
     },
     cuttingMaterial:{
-        type:DataTypes.STRING
-    },
-    airAssist:{
         type:DataTypes.STRING
     },
     workingArea:{
