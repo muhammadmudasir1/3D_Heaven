@@ -1,4 +1,4 @@
-import { InsertNews,removeNews,getNews,getNewsById,updateNews } from "../services/News_Service.js"
+import { InsertNews,removeNews,getNews,getNewsById,updateNews,removeImageFromNews } from "../services/News_Service.js"
 import CreateError from "http-errors"
 
 
@@ -61,3 +61,14 @@ export const deleteNews=async (req,res,next)=>{
     res.send("This is delete News")
 }
 
+export const removeImage=async (req,res,next)=>{
+    try {    
+        const Id=req.params.id
+        const result=await removeImageFromNews(Id)
+        res.send("This is delete News")
+    } catch (error) {
+        console.log(error)
+        next(error)       
+    }
+
+}

@@ -33,3 +33,14 @@ export const updateNews = async(Id,data)=>{
     })
     return instance
 }
+
+export const removeImageFromNews = async(Id)=>{
+    const instance=await news.update({
+        "image":""
+    },{
+        where:{
+            newsId:Id
+        }
+    })
+    return instance
+}
