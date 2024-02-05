@@ -13,12 +13,22 @@ const EbayScrap = async (url) => {
         
         await page.waitForSelector(discountedPriceSelector);
         let discountedPrice = await page.$eval(discountedPriceSelector, element => element.textContent);
+        console.log(discountedPrice)
         const unitMatch = discountedPrice.match(/[A-Z]{3}/);
         let unit =unitMatch ? unitMatch[0] : null;
         unit=unit==="EUR"?"€":unit==="US"?"$":unit
         let match = discountedPrice.match(/\d+(,\d+)?/);
-        discountedPrice=match?match[0]:null
-        discountedPrice=parseFloat(discountedPrice.replace(/\./g, '').replace(/,/g, '.').replace(/\|/g, ','))
+        // const matchedPrice=discountedPrice.match(/EUR \d+,\d+/)
+        discountedPrice=match[0]
+        // discountedPrice=matchedPrice[0]
+        if (!(unit==="$")){
+            discountedPrice=parseFloat(discountedPrice.trim().replace(/\./g, '').replace(/,/g, '.').replace(/\|/g, ','))
+            // regularPrice=parseFloat(regularPrice.trim().replace(/\./g, '').replace(/,/g, '.').replace(/\|/g, ',').slice(1))
+        }
+        else{
+            discountedPrice=parseFloat(discountedPrice.trim())
+            regularPrice=parseFloat(regularPrice.trim())
+        }
     
         await browser.close();
 

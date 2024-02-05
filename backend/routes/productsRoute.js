@@ -28,10 +28,13 @@ import {
     getReview,
     updateReview,
     setTopFive,
-    getTopFive
+    getTopFive,
+    getProductsList,
+    filter
 } from "../controller/productController.js"
 
 import upload from '../middleware/fileUpload.js'
+import { manufacturerList } from '../services/Product_Service.js'
 
 
 const route = express.Router()
@@ -57,6 +60,8 @@ const route = express.Router()
     route.post('/addVariants',addVariant)
     route.patch('/removeVariant',deleteVariant)
     route.get('/manufacturerList/:type',getManufacturerList)
+    route.post('/productList/',getProductsList)
+    route.post('/filter',filter)
     route.delete('/:id',deleteProduct)
     route.post('/check', checkPurchaseLink)
     route.patch('/removeImage/:productId',removeProductImage)

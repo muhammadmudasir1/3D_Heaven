@@ -21,7 +21,7 @@ export const allproduct = async () => {
 export const findProductsbyType = async (type) => {
     return await Product.findAll({
         where: { productType: type },
-        attributes: ['Id', 'product_name', 'manufacturer', 'discription', 'price', 'include_in_BestDeals'],
+        attributes: ['Id', 'product_name', 'manufacturer', 'discription', 'price', 'include_in_BestDeals', 'overall_rating'],
         include: {
             model: ProductImages,
             where: {
@@ -29,7 +29,8 @@ export const findProductsbyType = async (type) => {
             },
             attributes: ['path']
 
-        }
+        },
+        order: [['createdAt', 'DESC']]
     })
 }
 
@@ -83,10 +84,10 @@ export const InsertLeaserCutter_Specs = async (data) => {
     return instance
 }
 
-export const updateSLA_Specs = async (specsId,data) => {
-    const instance = await SLA_specs.update(data,{
-        where:{
-            id:specsId
+export const updateSLA_Specs = async (specsId, data) => {
+    const instance = await SLA_specs.update(data, {
+        where: {
+            id: specsId
         }
     })
     console.log(instance)
@@ -94,32 +95,32 @@ export const updateSLA_Specs = async (specsId,data) => {
 }
 
 
-export const updateFDM_Specs = async (specsId,data) => {
+export const updateFDM_Specs = async (specsId, data) => {
     console.log(data)
-    const instance = await FDM_specs.update(data,{
-        where:{
-            id:specsId
+    const instance = await FDM_specs.update(data, {
+        where: {
+            id: specsId
         }
     })
     return instance
 }
 
 
-export const updateScanner_Specs = async (specsId,data) => {
-    const instance = await Scanner_specs.update(data,{
-        where:{
-            id:specsId
+export const updateScanner_Specs = async (specsId, data) => {
+    const instance = await Scanner_specs.update(data, {
+        where: {
+            id: specsId
         }
     })
     return instance
 }
 
 
-export const updateLeaserCutter_Specs = async (specsId,data) => {
+export const updateLeaserCutter_Specs = async (specsId, data) => {
     console.log(data)
-    const instance = await LeaserCutter_specs.update(data,{
-        where:{
-            id:specsId
+    const instance = await LeaserCutter_specs.update(data, {
+        where: {
+            id: specsId
         }
     })
     return instance
@@ -127,10 +128,10 @@ export const updateLeaserCutter_Specs = async (specsId,data) => {
 
 
 export const findProductById = async (id) => {
-    const instance = await Product.findByPk(id,{
+    const instance = await Product.findByPk(id, {
         include: {
             model: ProductImages,
-            attributes:['path','role']
+            attributes: ['path', 'role']
 
         }
     })
@@ -194,7 +195,7 @@ export const getLeaserCutterSpecs = async (id) => {
 
 export const SearchInProduct = async (SearchQuery) => {
     try {
-        console.log("search " + SearchQuery )
+        console.log("search " + SearchQuery)
         const products = await Product.findAll({
             where: {
                 [Op.or]: [
@@ -210,14 +211,13 @@ export const SearchInProduct = async (SearchQuery) => {
                     }
                 ]
             },
-            attributes: ['Id', 'product_name','overall_rating','discription',"productType"],
+            attributes: ['Id', 'product_name', 'overall_rating', 'discription', "productType"],
             include: {
                 model: ProductImages,
                 where: {
                     role: 1
                 },
                 attributes: ['path']
-
             }
         })
         console.log(products)
@@ -247,7 +247,7 @@ export const SearchInProductByType = async (SearchQuery, type) => {
                 ],
                 productType: type
             },
-            attributes: ['Id', 'product_name','overall_rating','discription'],
+            attributes: ['Id', 'product_name', 'overall_rating', 'discription'],
             include: {
                 model: ProductImages,
                 where: {
@@ -304,7 +304,7 @@ export const productDetail = async (id) => {
 
 export const updateProduct = async (id, data) => {
     const overall_rating = Math.round((data.price_rating + data.innovation_rating + data.software_rating + data.customer_service_rating + data.processing_rating) / 5)
-    data['overall_rating']=overall_rating
+    data['overall_rating'] = overall_rating
     console.log(data)
     const result = await Product.update(data,
         {
@@ -377,14 +377,88 @@ export const removeVariant = async (product, variant) => {
 
 
 export const manufacturerList = async (type) => {
-    const manufacturer = await Product.findAll({
-        where: {
-            productType: type
-        },
-        attributes: [fn('DISTINCT', col('manufacturer')), 'manufacturer']
-
-    })
+    let manufacturer = []
+    if (type != 0) {
+        manufacturer = await Product.findAll({
+            where: {
+                productType: type
+            },
+            attributes: [fn('DISTINCT', col('manufacturer')), 'manufacturer']
+        })
+    }
+    else {
+        manufacturer = await Product.findAll({
+            attributes: [fn('DISTINCT', col('manufacturer')), 'manufacturer']
+        })
+    }
     return manufacturer
+}
+
+export const productList = async (manufacturers) => {
+    let products = []
+    if (manufacturers.length > 0) {
+
+        products = await Product.findAll({
+            where: {
+                manufacturer: {
+                    [Op.in]: manufacturers
+                }
+            },
+            attributes: ['Id', 'product_name'],
+
+        })
+    }
+    else {
+        products = await Product.findAll({
+            attributes: ['Id', 'product_name'],
+
+        })
+    }
+    return products
+}
+
+export const productFilter = async (data) => {
+    console.log(data)
+    let products = []
+    let whereClause = {}
+    if (data.manufacturers && data.manufacturers.length > 0) {
+        whereClause['manufacturer'] = {
+
+            [Op.in]: data.manufacturers
+        }
+    }
+    if (data.products && data.products.length > 0) {
+        whereClause['Id'] = {
+            [Op.in]: data.products
+        }
+    }
+    if (data.price) {
+        whereClause['price'] = {
+            [Op.lt]: data.price
+        }
+    }
+    if (data.productType){
+        whereClause['productType']=data.productType
+    }
+
+    products = await Product.findAll({
+        where: whereClause,
+        attributes: ['Id', 'product_name', 'manufacturer', 'discription', 'price', 'include_in_BestDeals', 'overall_rating','productType'],
+        include: [
+            SLA_specs,
+            FDM_specs,
+            Scanner_specs,
+            LeaserCutter_specs,
+            purchaseLinks,
+            {
+            model: ProductImages,
+            where: {
+                role: 1
+            },
+            attributes: ['path']
+        }]
+    })
+    return products
 }
 
 export const findPurchaseLinks = async (id) => {
@@ -417,6 +491,7 @@ export const setNewPriceForPurchaseLink = async (id, data) => {
 
 export const addPurchaseLink = async (data) => {
     const purchaseLinksId = data.purchaseLink.purchaseLinkId
+
     const link = data.purchaseLink
     const id = data.productId
     let result
@@ -436,7 +511,9 @@ export const addPurchaseLink = async (data) => {
     else {
         const product = await Product.findByPk(id)
         if (product) {
+            console.log(link)
             result = await purchaseLinks.create({ ...link, "product": product.Id })
+
         }
         else {
             throw Error("Product is not Found")
@@ -517,24 +594,24 @@ export const insertImages = async (productId, images, imageRole) => {
     return true
 }
 
-export const CreateReview=async (productId,data)=>{
-    const result=await Review.create({...data,product:productId})
+export const CreateReview = async (productId, data) => {
+    const result = await Review.create({ ...data, product: productId })
     return result
 }
 
-export const findReview=async (productId)=>{
-    const result=await Review.findAll({
-        where:{
-            product:productId
+export const findReview = async (productId) => {
+    const result = await Review.findAll({
+        where: {
+            product: productId
         }
     })
     return result
 }
 
-export const changeReviews=async (productId,data)=>{
-    const result=await Review.update(data,{
-        where:{
-            product:productId
+export const changeReviews = async (productId, data) => {
+    const result = await Review.update(data, {
+        where: {
+            product: productId
         }
     })
     return result

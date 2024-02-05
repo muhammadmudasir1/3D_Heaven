@@ -2,7 +2,7 @@ import puppeteer from "puppeteer";
 
 const AnyCubic = async (url) => {
         const browser = await puppeteer.launch({
-            // headless: false,
+            headless: false,
             defaultViewport: false
         });
         const page = await browser.newPage();
@@ -15,11 +15,11 @@ const AnyCubic = async (url) => {
         let discountedPrice=""
         let regularPrice=""
 
-            await page.waitForSelector(discountedPriceSelector);
+            await page.waitForSelector(discountedPriceSelector,{ timeout: 50000 });
             discountedPrice = await page.$eval(discountedPriceSelector, element => element.textContent);
             let unit=discountedPrice[0]
 
-            await page.waitForSelector(regularPriceSelector);
+            await page.waitForSelector(regularPriceSelector,{ timeout: 50000 });
             regularPrice = await page.$eval(regularPriceSelector, element => element.textContent);
 
             if(unit!=="$"){

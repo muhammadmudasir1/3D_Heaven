@@ -17,10 +17,21 @@ const ElegoScrap = async (url) => {
         let discountedPrice=""
         let regularPrice=""
 
+        try {
             await page.waitForSelector(discountedPriceSelector);
             discountedPrice = await page.$eval(discountedPriceSelector, element => element.textContent);
             await page.waitForSelector(regularPriceSelector);
             regularPrice = await page.$eval(regularPriceSelector, element => element.textContent);
+            
+        } catch (error) {
+            discountedPriceSelector=".product-price-container .discounted"
+            regularPriceSelector=".product-price-container  .amount"
+            await page.waitForSelector(discountedPriceSelector);
+            discountedPrice = await page.$eval(discountedPriceSelector, element => element.textContent);
+            await page.waitForSelector(regularPriceSelector);
+            regularPrice = await page.$eval(regularPriceSelector, element => element.textContent);
+        }
+
             let unit=discountedPrice[0]
 
             if (!(unit==="$")){

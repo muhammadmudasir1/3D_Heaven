@@ -55,7 +55,9 @@ import {
     updateScanner_Specs,
     CreateReview,
     findReview,
-    changeReviews
+    changeReviews,
+    productList,
+    productFilter
 } from "../services/Product_Service.js";
 import createError from 'http-errors'
 import Product from "../Models/Product.js"
@@ -193,54 +195,54 @@ export const CreateSpecs = async (req, res, next) => {
     }
 }
 
-export const UpdateSpecs=async (req,res,next)=>{
+export const UpdateSpecs = async (req, res, next) => {
     try {
-        const specsId=req.params.specsId
-        const {product_id,productType,data}=req.body
-        
-        switch (Number(productType)){
-            case 1:{
-                const OldSpecs=await getSLASpecs(product_id)
-                if(!OldSpecs || OldSpecs.id != specsId){
+        const specsId = req.params.specsId
+        const { product_id, productType, data } = req.body
+
+        switch (Number(productType)) {
+            case 1: {
+                const OldSpecs = await getSLASpecs(product_id)
+                if (!OldSpecs || OldSpecs.id != specsId) {
                     throw createError.UnprocessableEntity("Not Valid Product or Specs Id")
                 }
-                await updateSLA_Specs(specsId,data)
-                res.send({'msg':'Specs is updated'})
+                await updateSLA_Specs(specsId, data)
+                res.send({ 'msg': 'Specs is updated' })
                 break;
             }
-            case 2:{
-                const OldSpecs=await getFDMSpecs(product_id)
-                if(!OldSpecs || OldSpecs.id != specsId){
+            case 2: {
+                const OldSpecs = await getFDMSpecs(product_id)
+                if (!OldSpecs || OldSpecs.id != specsId) {
                     throw createError.UnprocessableEntity("Not Valid Product or Specs Id")
                 }
-                await updateFDM_Specs(specsId,data)
-                res.send({'msg':'Specs is updated'})
+                await updateFDM_Specs(specsId, data)
+                res.send({ 'msg': 'Specs is updated' })
                 break;
             }
-            case 3:{
-                const OldSpecs=await getLeaserCutterSpecs(product_id)
-                if(!OldSpecs || OldSpecs.id != specsId){
+            case 3: {
+                const OldSpecs = await getLeaserCutterSpecs(product_id)
+                if (!OldSpecs || OldSpecs.id != specsId) {
                     throw createError.UnprocessableEntity("Not Valid Product or Specs Id")
                 }
-                await updateLeaserCutter_Specs(specsId,data)
-                res.send({'msg':'Specs is updated'})
+                await updateLeaserCutter_Specs(specsId, data)
+                res.send({ 'msg': 'Specs is updated' })
                 break;
             }
-            case 4:{
-                const OldSpecs=await getScannerSpecs(product_id)
-                if(!OldSpecs || OldSpecs.id != specsId){
+            case 4: {
+                const OldSpecs = await getScannerSpecs(product_id)
+                if (!OldSpecs || OldSpecs.id != specsId) {
                     throw createError.UnprocessableEntity("Not Valid Product or Specs Id")
                 }
-                await updateScanner_Specs(specsId,data)
-                res.send({'msg':'Specs is updated'})
+                await updateScanner_Specs(specsId, data)
+                res.send({ 'msg': 'Specs is updated' })
                 break;
             }
-            default:{
+            default: {
                 throw createError.UnprocessableEntity("This product not have any specs")
             }
         }
 
-        
+
 
     } catch (error) {
         console.log(error)
@@ -305,6 +307,7 @@ export const SingleProduct = async (req, res, next) => {
 export const addPurchaseLinkToProduct = async (req, res, next) => {
     try {
         const data = req.body
+        console.log(data)
         const result = await addPurchaseLink(data)
         res.send("Purchase Link is added")
 
@@ -397,26 +400,24 @@ export const getPrice = async (req, res, next) => {
         if (oldPrices.retrivePriceFlag && (currentTime - updateTime) > 5 * 60 * 60 * 1000) {
 
             const response = await check(oldPrices.siteType, oldPrices.link)
-            if (response.discountedPrice != oldPrices.discountedPrice || response.regularPrice != oldPrices.regularPrice || response.unit != oldPrices.unit) {
-                const data = {
-                    discountedPrice: response.discountedPrice,
-                    originalPrice: response.regularPrice,
-                    unit: response.unit,
-                }
-                const result = await setNewPriceForPurchaseLink(purchaseLinkId, data)
-                if (result) {
-                    res.send(data)
-                }
 
+            const data = {
+                discountedPrice: response.discountedPrice,
+                originalPrice: response.regularPrice,
+                unit: response.unit,
             }
-            else {
-                res.send(
-                    {
-                        "discountedPrice": oldPrices.discountedPrice,
-                        "originalPrice": oldPrices.originalPrice,
-                        "unit": oldPrices.unit,
-                    })
+            const result = await setNewPriceForPurchaseLink(purchaseLinkId, data)
+            if (result) {
+                res.send(data)
             }
+
+
+            res.send(
+                {
+                    "discountedPrice": oldPrices.discountedPrice,
+                    "originalPrice": oldPrices.originalPrice,
+                    "unit": oldPrices.unit,
+                })
         }
         else {
             res.send(
@@ -510,6 +511,28 @@ export const getManufacturerList = async (req, res, next) => {
     }
 }
 
+export const getProductsList = async (req, res, next) => {
+    try {
+        const manufacturers = req.body.manufacturers
+        const products = await productList(manufacturers)
+        res.send(products)
+    } catch (error) {
+        console.log(error)
+        next(error)
+    }
+}
+
+export const filter = async (req, res, next) => {
+    try {
+        const data = req.body
+        const products = await productFilter(data)
+        res.send(products)
+    } catch (error) {
+        console.log(error)
+        next(error)
+    }
+}
+
 export const checkPurchaseLink = async (req, res, next) => {
     try {
         let { siteType, link } = req.body
@@ -584,8 +607,8 @@ export const removeProductImage = async (req, res, next) => {
                 return image.id
             })
             const isCorrectImage = oldImages.includes(deletingImage)
-            const body=req.body
-            console.log({...req.body})
+            const body = req.body
+            console.log({ ...req.body })
             if (isCorrectImage) {
                 const deleteingImageInstance = await getProductImageById(deletingImage)
 
@@ -669,7 +692,7 @@ export const getAllProductImages = async (req, res, next) => {
 export const addImages = async (req, res, next) => {
     try {
         const productId = req.params.productId
-        
+
         let images = req.files.images
         if (images) {
             images = images.map((image) => {
@@ -679,8 +702,8 @@ export const addImages = async (req, res, next) => {
         const productInstance = await productDetail(productId)
         console.log(productInstance.Id)
         if (productInstance.Id) {
-            
-            const result=await insertImages(productId,images,2)
+
+            const result = await insertImages(productId, images, 2)
             res.send({ result })
 
         }
@@ -709,7 +732,7 @@ export const addImages = async (req, res, next) => {
 export const addSOCImages = async (req, res, next) => {
     try {
         const productId = req.params.productId
-        
+
         let images = req.files.images
         if (images) {
             images = images.map((image) => {
@@ -719,8 +742,8 @@ export const addSOCImages = async (req, res, next) => {
         const productInstance = await productDetail(productId)
         console.log(productInstance.Id)
         if (productInstance.Id) {
-            
-            const result=await insertImages(productId,images,3)
+
+            const result = await insertImages(productId, images, 3)
             res.send({ result })
 
         }
@@ -746,66 +769,66 @@ export const addSOCImages = async (req, res, next) => {
 
 }
 
-export const addReview=async (req,res,next)=>{
-    try{
-        const productId=req.params.productId
-        const data=req.body
-        const result= await CreateReview(productId,data)
+export const addReview = async (req, res, next) => {
+    try {
+        const productId = req.params.productId
+        const data = req.body
+        const result = await CreateReview(productId, data)
         res.send("ok")
     }
-    catch(error) {
+    catch (error) {
         console.log(error)
         next(error)
     }
 }
 
-export const getReview=async (req,res,next)=>{
-    try{
-        const productId=req.params.productId
-        const result= await findReview(productId)
-        res.send(result)
-    }
-    catch(error) {
-        console.log(error)
-        next(error)
-    }
-}
-
-export const updateReview=async(req,res,next)=>{
-    try{
-        const productId=req.params.productId
-        const data=req.body
-        const result= await changeReviews(productId,data)
-        res.send(result)
-    }
-    catch(error) {
-        next(error)
-    }
-}
-
-export const setTopFive=async(req,res,next)=>{
+export const getReview = async (req, res, next) => {
     try {
-        const products=req.body.products
+        const productId = req.params.productId
+        const result = await findReview(productId)
+        res.send(result)
+    }
+    catch (error) {
+        console.log(error)
+        next(error)
+    }
+}
+
+export const updateReview = async (req, res, next) => {
+    try {
+        const productId = req.params.productId
+        const data = req.body
+        const result = await changeReviews(productId, data)
+        res.send(result)
+    }
+    catch (error) {
+        next(error)
+    }
+}
+
+export const setTopFive = async (req, res, next) => {
+    try {
+        const products = req.body.products
         const productsString = JSON.stringify(products);
         await redisClient.set("topfive", productsString);
-       res.send(req.body.products) 
+        res.send(req.body.products)
     } catch (error) {
         console.log(error)
         next(error)
     }
 }
 
-export const getTopFive=async(req,res,next)=>{
+export const getTopFive = async (req, res, next) => {
     try {
-        let products=await redisClient.get('topfive')
-        products=await JSON.parse(products)
-        let result=[]
-        for(let id of products){
-            const product=await findProductById(id)
+        let products = await redisClient.get('topfive')
+        products = await JSON.parse(products)
+        let result = []
+        for (let id of products) {
+            const product = await findProductById(id)
             result.push(product)
         }
         res.send(result)
     } catch (error) {
-        console.log(error)   
+        console.log(error)
     }
 }

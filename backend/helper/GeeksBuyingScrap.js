@@ -8,7 +8,7 @@ const GeeksBuyingScrap=async (url)=>{
     const page=await browser.newPage();
     await page.goto(url)
     await page.waitForSelector('#saleprice')
-    await page.waitForSelector('#discount')
+    await page.waitForSelector('#regprice')
     await page.waitForSelector('#currencyF')
     let discountedPrice = await page.$eval('#saleprice', element => element.textContent);
     let regularPrice = await page.$eval('#regprice', element => element.textContent);

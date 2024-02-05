@@ -20,26 +20,39 @@ const ScrapBambulab=async(url)=>{
 
     }}
     await browser.close()
-    const result={
-        prices:[]
+    let [discountedPrice,regularPrice]=prices
+    let unit=discountedPrice[0]
+    // const result={
+    //     prices:[]
+    // }
+    // if(prices.length>0){
+    //     const unit = (prices[0].match(/[A-Z]{3}/))[0];
+    //     result['unit']=unit
+    //     result.unit=result.unit==="USD"&&"$"
+        
+    //     prices.forEach((ele,index)=>{
+    //         const price=parseFloat(ele.replace(/[^0-9.]/g, ''))
+    //         result.prices.push(price)
+    //     })
+    // }
+    // let [discountedPrice,regularPrice]=result.prices
+    // console.log(discountedPrice)
+    if (!(unit==="$")){
+        discountedPrice=parseFloat(discountedPrice.trim().replace(/\./g, '').replace(/,/g, '.').replace(/\|/g, ',').slice(1))
+        // regularPrice=parseFloat(regularPrice.trim().replace(/\./g, '').replace(/,/g, '.').replace(/\|/g, ',').slice(1))
     }
-    if(prices.length>0){
-        const unit = (prices[0].match(/[A-Z]{3}/))[0];
-        result['unit']=unit
-        result.unit=result.unit==="USD"&&"$"
+    else{
+        discountedPrice=parseFloat(discountedPrice.trim().slice(1))
+        // regularPrice=parseFloat(regularPrice.trim().slice(1))
+    }
 
-        prices.forEach((ele,index)=>{
-            const price=parseFloat(ele.replace(/[^0-9.]/g, ''))
-            result.prices.push(price)
-        })
-    }
-    let [discountedPrice,regularPrice]=result.prices
+
     regularPrice=regularPrice?regularPrice:null
 
     return {
         discountedPrice,
         regularPrice,
-        "unit":result.unit
+        "unit":unit
     }
 }
 

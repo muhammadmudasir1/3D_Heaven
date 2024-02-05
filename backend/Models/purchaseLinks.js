@@ -12,7 +12,7 @@ const purchaseLinks = sequelize.define("purchaseLinks", {
         allowNull: false,
     },
     link: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
         allowNull: false,
     },
     title: {
