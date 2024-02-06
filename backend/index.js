@@ -4,12 +4,14 @@ import morgan from 'morgan'
 import createError from 'http-errors'
 import route from './routes/productsRoute.js'
 import newsRoutes from './routes/newsRoutes.js'
+import beginnerGuidRoute from './routes/beginnersGuidRoutes.js'
 import userRoutes from './routes/userRoutes.js'
 import DB from './Models/index.js'
 import './helper/init_redis.js'
 import {sequelize} from './helper/sequelize_config.js'
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
+
 
 
 
@@ -34,6 +36,7 @@ app.use(cors());
 app.use('/api/products',route)
 app.use('/api/news',newsRoutes)
 app.use('/api/user',userRoutes)
+app.use('/api/beginnersGuid',beginnerGuidRoute)
 
 app.use((req,res,next)=>{
     next(createError.NotFound("invalid Url or page is not found"))
