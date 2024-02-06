@@ -15,6 +15,10 @@ const purchaseLinks = sequelize.define("purchaseLinks", {
         type: DataTypes.TEXT,
         allowNull: false,
     },
+    visitingLink:{
+        type: DataTypes.TEXT,
+        // allowNull: false,
+    },
     title: {
         type: DataTypes.STRING,
     },

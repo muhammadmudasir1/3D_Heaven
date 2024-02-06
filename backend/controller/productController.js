@@ -410,14 +410,6 @@ export const getPrice = async (req, res, next) => {
             if (result) {
                 res.send(data)
             }
-
-
-            res.send(
-                {
-                    "discountedPrice": oldPrices.discountedPrice,
-                    "originalPrice": oldPrices.originalPrice,
-                    "unit": oldPrices.unit,
-                })
         }
         else {
             res.send(
@@ -428,8 +420,20 @@ export const getPrice = async (req, res, next) => {
                 })
         }
     } catch (error) {
-        console.log(error)
-        next(error)
+        try {
+            console.log(error)
+            res.send(
+                {
+                    "discountedPrice": oldPrices.discountedPrice,
+                    "originalPrice": oldPrices.originalPrice,
+                    "unit": oldPrices.unit,
+                    "msg":"Price Can't Find by Site"
+                })
+            
+        } catch (err) {
+            console.log(error)
+            next(error)
+        }
     }
 }
 

@@ -466,7 +466,7 @@ export const findPurchaseLinks = async (id) => {
         where: {
             "product": id
         },
-        attributes: ["purchaseLinksId", "siteType", "link", "title", "coupon", "discription", "retrivePriceFlag"]
+        attributes: ["purchaseLinksId", "siteType", "link", "title", "coupon", "discription", "retrivePriceFlag","visitingLink"]
     })
     return result
 }
@@ -519,27 +519,6 @@ export const addPurchaseLink = async (data) => {
             throw Error("Product is not Found")
         }
     }
-    let links = await purchaseLinks.findAll({
-        where: {
-            "product": id
-        }
-    })
-    links.sort((a, b) => {
-        if (a.discountedPrice > b.discountedPrice) {
-            return 1
-        }
-        if (a.discountedPrice < b.discountedPrice) {
-            return -1
-        }
-        return 0
-    })
-
-    Product.update({ "price": links[0].discountedPrice, "unit": links[0].unit }, {
-        where: {
-            Id: id
-        }
-    })
-
     return result
 }
 
