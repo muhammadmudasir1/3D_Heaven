@@ -427,9 +427,9 @@ export const getPrice = async (req, res, next) => {
                     "discountedPrice": oldPrices.discountedPrice,
                     "originalPrice": oldPrices.originalPrice,
                     "unit": oldPrices.unit,
-                    "msg":"Price Can't Find by Site"
+                    "msg": "Price Can't Find by Site"
                 })
-            
+
         } catch (err) {
             console.log(error)
             next(error)
@@ -484,7 +484,25 @@ export const addVariant = async (req, res, next) => {
 export const deleteProduct = async (req, res, next) => {
     try {
         const productId = req.params.id
+        const productInstance = await productDetail(productId)
+        let oldImages = []
+        if (productInstance) {
+
+            oldImages = productInstance.ProductImages.map((image) => {
+                return image.path
+            })
+        }
+        else {
+            next(createError.NotFound("Product Not Found"))
+        }
         await removeProduct(productId)
+        oldImages.forEach((image) => {
+            unlink(`upload/${image}`, (err) => {
+                if (err) {
+                    console.log(err)
+                }
+            })
+        })
         res.send({ "msg": "Product is delete" })
     } catch (error) {
         console.log(error)
