@@ -390,6 +390,10 @@ export const getPrice = async (req, res, next) => {
             default:
                 next(createError.UnprocessableEntity("Invalid Sites"))
         }
+        if(!result){
+            throw Error("Cannot Find price")
+        }
+
         return result
     }
     try {
@@ -400,7 +404,7 @@ export const getPrice = async (req, res, next) => {
         if (oldPrices.retrivePriceFlag && (currentTime - updateTime) > 5 * 60 * 60 * 1000) {
 
             const response = await check(oldPrices.siteType, oldPrices.link)
-
+                console.log(response)
             const data = {
                 discountedPrice: response.discountedPrice,
                 originalPrice: response.regularPrice,
@@ -609,7 +613,13 @@ export const checkPurchaseLink = async (req, res, next) => {
             default:
                 next(createError.UnprocessableEntity("Invalid Sites"))
         }
-        res.send(result)
+        if(result){
+            res.send(result)
+
+        }
+        else{
+            next(createError("Cannot Find Price"))
+        }
 
     } catch (error) {
         console.log("from product Controller check Purchase Link " + error)

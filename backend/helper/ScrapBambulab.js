@@ -66,7 +66,7 @@ const ScrapBambulab = async (url) => {
     const prices = [];
 
     const browser = await puppeteer.launch({
-        headless: true,
+        headless: "new",
         defaultViewport: false,
         timeout: 60000,
     });
@@ -100,7 +100,8 @@ const ScrapBambulab = async (url) => {
     if (!(unit === "$")) {
         discountedPrice = parseFloat(discountedPrice.trim().replace(/\./g, '').replace(/,/g, '.').replace(/\|/g, ',').slice(1));
     } else {
-        discountedPrice = parseFloat(discountedPrice.trim().slice(1));
+        // console.log(discountedPrice)
+        discountedPrice = parseFloat(discountedPrice.replace(/[^0-9.]/g, ''));
     }
 
     regularPrice = regularPrice ? parseFloat(regularPrice.trim()) : null;

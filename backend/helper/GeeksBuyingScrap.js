@@ -2,7 +2,7 @@ import puppeteer from "puppeteer";
 
 const GeeksBuyingScrap=async (url)=>{
     const browser=await puppeteer.launch({
-        headless:true,
+        headless: "new",
         defaultViewport:false
     });
     const page=await browser.newPage();

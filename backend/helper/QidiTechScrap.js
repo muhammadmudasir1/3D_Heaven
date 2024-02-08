@@ -2,7 +2,7 @@ import puppeteer from "puppeteer";
 
 const QidiTech = async (url) => {
         const browser = await puppeteer.launch({
-            // headless: false,
+            headless: "new",
             defaultViewport: false
         });
         const page = await browser.newPage();

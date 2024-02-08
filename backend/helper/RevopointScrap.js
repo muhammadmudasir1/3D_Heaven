@@ -2,7 +2,7 @@ import puppeteer from "puppeteer";
 
 const RevopointScrap = async (url) => {
         const browser = await puppeteer.launch({
-            // headless: false,
+            headless: "new",
             defaultViewport: false
         });
         const page = await browser.newPage();
@@ -13,11 +13,16 @@ const RevopointScrap = async (url) => {
 
         
         let discountedPriceSelector = '.price-list--lg .money';
+        let regularPriceSelector = '.sr-only .price-list ';
         let discountedPrice=""
         let regularPrice=null
 
             await page.waitForSelector(discountedPriceSelector);
             discountedPrice = await page.$eval(discountedPriceSelector, element => element.textContent);
+            
+            // await page.waitForSelector(regularPriceSelector);
+            // regularPrice = await page.$eval(regularPriceSelector, element => element.textContent);
+            
             let unit=discountedPrice[0]
 
             if (!(unit==="$")){

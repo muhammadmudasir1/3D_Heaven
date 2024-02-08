@@ -2,7 +2,7 @@ import puppeteer from "puppeteer";
 
 const EbayScrap = async (url) => {
         const browser = await puppeteer.launch({
-            headless: true,
+            headless: "new",
             defaultViewport: false
         });
         let regularPrice = null;
