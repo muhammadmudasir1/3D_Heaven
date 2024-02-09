@@ -16,19 +16,11 @@ const Product = sequelize.define("Product", {
         type: DataTypes.STRING,
         allowNull: false
     },
-    weight: {
-        type: DataTypes.STRING,
-        allowNull: true
-    },
-    diemention: {
-        type: DataTypes.STRING,
-        allowNull: true
-    },
     price_rating: {
         type: DataTypes.SMALLINT,
         validate: {
             isInt: {
-                msg: "must be integer"
+                msg: "must be integer Price"
             },
             min: {
                 args: [0],
@@ -44,7 +36,7 @@ const Product = sequelize.define("Product", {
         type: DataTypes.SMALLINT,
         validate: {
             isInt: {
-                msg: "must be integer"
+                msg: "must be integer Innovation"
             },
             min: {
                 args: [0],
@@ -60,7 +52,7 @@ const Product = sequelize.define("Product", {
         type: DataTypes.SMALLINT,
         validate: {
             isInt: {
-                msg: "must be integer"
+                msg: "must be integer software"
             },
             min: {
                 args: [0],
@@ -76,7 +68,7 @@ const Product = sequelize.define("Product", {
         type: DataTypes.SMALLINT,
         validate: {
             isInt: {
-                msg: "must be integer"
+                msg: "must be integer customer"
             },
             min: {
                 args: [0],
@@ -92,7 +84,7 @@ const Product = sequelize.define("Product", {
         type: DataTypes.SMALLINT,
         validate: {
             isInt: {
-                msg: "must be integer"
+                msg: "must be integer processing"
             },
             min: {
                 args: [0],
@@ -105,10 +97,10 @@ const Product = sequelize.define("Product", {
         }
     },
     overall_rating: {
-        type: DataTypes.SMALLINT,
+        type: DataTypes.FLOAT,
         validate: {
             isInt: {
-                msg: "must be integer"
+                msg: "must be integer overall"
             },
             min: {
                 args: [0],
@@ -120,37 +112,8 @@ const Product = sequelize.define("Product", {
             }
         }
     },
-    pros: {
-        type: DataTypes.TEXT,
-        allowNull: true
-    },
-    cons: {
-        type: DataTypes.TEXT,
-        allowNull: true
-    },
-    technical_data: {
-        type: DataTypes.TEXT,
-        allowNull: true
-    },
-    first_impression: {
-        type: DataTypes.TEXT,
-        allowNull: true
-    },
-    images: {
-        type: DataTypes.ARRAY(DataTypes.STRING),
-        allowNull: true
-    },
-    thumbnail: {
-        type: DataTypes.STRING,
-        allowNull: false
-
-    },
     scope_of_delivery_discription: {
         type: DataTypes.TEXT,
-        allowNull: true
-    },
-    scope_of_delivery_images: {
-        type: DataTypes.ARRAY(DataTypes.STRING),
         allowNull: true
     },
     include_in_BestDeals: {
@@ -162,14 +125,14 @@ const Product = sequelize.define("Product", {
         allowNull: false,
         validate: {
             isInt: {
-                msg: "must be integer"
+                msg: "must be integer ProductType"
             },
             min: {
                 args: [1],
                 msg: "invalid Product Type"
             },
             max: {
-                args: [4],
+                args: [5],
                 msg: "invalid Product Type"
             }
         }
@@ -180,21 +143,13 @@ const Product = sequelize.define("Product", {
     price: {
         type: DataTypes.FLOAT
     },
-    priority: {
-        type: DataTypes.INTEGER,
-        defaultValue: 0,
-        validate: {
-            isInt: {
-                msg: "must be integer"
-            },
-            min: {
-                args: [0],
-                msg: "Value must be positive"
-            },
-        },
+    unit:{
+        type:DataTypes.STRING
+    },
+    isActive:{
+        type:DataTypes.BOOLEAN,
+        defaultValue:true
     }
-
-
 }
 )
 

@@ -63,7 +63,7 @@ const FDM_specs=sequelize.define('FDM',{
     supportingComponentCooling:{
         type:DataTypes.BOOLEAN,
     },
-    airFiller:{
+    airFilter:{
         type:DataTypes.STRING,
     },
     display:{

@@ -5,6 +5,9 @@ import SLA_specs from "./SLA_specs.js";
 import LeaserCutter_specs from "./leaserCutter.js";
 import Scanner_specs from "./Scanner_specs.js";
 import purchaseLinks from "./purchaseLinks.js";
+import User from "./User.js";
+import ProductImages from "./productImages.js";
+import Review from "./Review.js";
 
 const DB =()=>{
     const Models={
@@ -13,43 +16,52 @@ const DB =()=>{
         SLA_specs,
         LeaserCutter_specs,
         Scanner_specs,
-        purchaseLinks
-        
+        purchaseLinks,
+        User,
+        ProductImages,
+        Review
     };
 
-    purchaseLinks.hasOne(Product,{
-        foreignKey:'product',
-        allowNull:false
+    Product.hasMany(purchaseLinks,{
+        foreignKey:"product",
+        allowNull:false,
+        unique:true,
+        onDelete:'CASCADE'
     })
 
-    // FDM_specs.belongsTo(Product,{
-    //     foreignKey:"product"
-    // })
-    // SLA_specs.belongsTo(Product,{
-    //     foreignKey:'product'
-    // })
-
-    // Scanner_specs.belongsTo(Product,{
-    //     foreignKey:'product'
-    // })
-    // LeaserCutter_specs.belongsTo(Product,{
-    //     foreignKey:'product'
-    // })
     Product.hasOne(FDM_specs,{
         foreignKey:"product",
-        allowNull:false
+        allowNull:false,
+        unique:true,
+        onDelete:'CASCADE'
     })
     Product.hasOne(SLA_specs,{
         foreignKey:"product",
-        allowNull:false
+        allowNull:false,
+        unique:true,
+        onDelete:'CASCADE'
     })
+
     Product.hasOne(Scanner_specs,{
         foreignKey:"product",
-        allowNull:false
+        allowNull:false,
+        unique:true,
+        onDelete:'CASCADE'
     })
     Product.hasOne(LeaserCutter_specs,{
         foreignKey:"product",
-        allowNull:false
+        allowNull:false,
+
+        unique:true,
+        onDelete:'CASCADE'
+    })
+    Product.hasOne(Review,{
+        foreignKey:"product",
+        allowNull:true
+    })
+    Product.hasMany(ProductImages,{
+        allowNull:false,
+        onDelete:'CASCADE'
     })
     
     

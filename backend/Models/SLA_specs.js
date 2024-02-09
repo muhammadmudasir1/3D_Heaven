@@ -44,6 +44,10 @@ const SLA_specs=sequelize.define('SLA',{
     buildSize:{
         type:DataTypes.STRING
     } 
-})
+},
+{
+    timestamps:false
+}
+)
 
 export default SLA_specs
