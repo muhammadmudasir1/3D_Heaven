@@ -34,8 +34,6 @@ import {
 } from "../controller/productController.js"
 
 import upload from '../middleware/fileUpload.js'
-import { manufacturerList } from '../services/Product_Service.js'
-
 
 const route = express.Router()
     
