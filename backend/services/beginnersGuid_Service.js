@@ -20,7 +20,7 @@ export const getBeginnersGuidById=async (Id)=>{
 export const removeBeginnersGuid= async(Id)=>{
     await beginnersGuid.destroy({
         where:{
-            newsId:Id
+            guidId:Id
         }
     })
     return true

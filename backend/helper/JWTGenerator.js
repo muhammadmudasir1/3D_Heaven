@@ -18,7 +18,7 @@ export const RefreshTokenGenerator=async(userId,username)=>{
     const refreshToken=await jwt.sign(
         {username,userId},
         refreshTokenSecrate,
-        {'expiresIn':'90d'}
+        {'expiresIn':'30s'}
     )
 
     redisClient.set(userId,refreshToken)

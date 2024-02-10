@@ -32,16 +32,17 @@ import {
     getProductsList,
     filter
 } from "../controller/productController.js"
-
+import verifyToken from '../middleware/verifyToken.js'
 import upload from '../middleware/fileUpload.js'
 
 const route = express.Router()
     
     route.get('/',allProducts)
     route.get('/type/:type',getProductsByCategory)
-    route.patch('/:productId',UpdateProduct)
+    route.patch('/removeVariant',verifyToken,deleteVariant)
+    route.patch('/:productId',verifyToken,UpdateProduct)
     route.post('/Specs',CreateSpecs)
-    route.patch('/specs/:specsId',UpdateSpecs)
+    route.patch('/specs/:specsId',verifyToken,UpdateSpecs)
     route.post('/',upload.fields([
         {name:"thumbnail"},
         {name:"images"},
@@ -51,32 +52,32 @@ const route = express.Router()
     route.post('/search',Search)
     route.post('/searchbytype/:type',searchByType)
     route.get('/:productId',SingleProduct)
-    route.post('/addPurchaseLinks',addPurchaseLinkToProduct)
+    route.post('/addPurchaseLinks',verifyToken,addPurchaseLinkToProduct)
     route.get('/PurchaseLinks/:productId',getPurchaseLinks)
-    route.delete('/PurchaseLinks/:PurchaseLinkId',removePurchaseLink)
+    route.delete('/PurchaseLinks/:PurchaseLinkId',verifyToken,removePurchaseLink)
     route.get('/Price/:PurchaseLinkId',getPrice)
-    route.post('/addVariants',addVariant)
-    route.patch('/removeVariant',deleteVariant)
+    route.post('/addVariants',verifyToken,addVariant)
+    
     route.get('/manufacturerList/:type',getManufacturerList)
     route.post('/productList/',getProductsList)
     route.post('/filter',filter)
-    route.delete('/:id',deleteProduct)
-    route.post('/check', checkPurchaseLink)
-    route.patch('/removeImage/:productId',removeProductImage)
+    route.delete('/:id',verifyToken,deleteProduct)
+    route.post('/check',verifyToken,checkPurchaseLink)
+    route.patch('/removeImage/:productId',verifyToken,removeProductImage)
     route.get('/getImages/:productId',getAllProductImages)
     route.patch("/updatePurchaseLink",UpdatePurchaseLink)
-    route.post("/review/:productId",addReview)
+    route.post("/review/:productId",verifyToken,addReview)
     route.get("/review/:productId",getReview)
-    route.patch("/review/:productId",updateReview)
-    route.post("/TopFive/",setTopFive)
-    route.patch('/addImages/:productId',upload.fields([
+    route.patch("/review/:productId",verifyToken,updateReview)
+    route.post("/TopFive/",verifyToken,setTopFive)
+    route.patch('/addImages/:productId',verifyToken,upload.fields([
         {name:"images",maxCount:5}
     ]),addImages)
-    route.patch('/addsodimages/:productId',upload.fields([
+    route.patch('/addsodimages/:productId',verifyToken,upload.fields([
         {name:"images",maxCount:5}
     ]),addSOCImages)
     
-    route.patch('/changeThumbnail/:productId',setThumbnail)
+    route.patch('/changeThumbnail/:productId',verifyToken,setThumbnail)
     
 
     

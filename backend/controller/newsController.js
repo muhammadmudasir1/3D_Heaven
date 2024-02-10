@@ -56,9 +56,15 @@ export const NewsById=async(req,res,next)=>{
 }
 
 export const deleteNews=async (req,res,next)=>{
-    const Id=req.params.id
-    const result=await removeNews(Id)
-    res.send("This is delete News")
+    try {
+        const Id=req.params.id
+        const result=await removeNews(Id)
+        res.send("This is delete News")
+        
+    } catch (error) {
+        console.log(error)
+        next(error)
+    }
 }
 
 export const removeImage=async (req,res,next)=>{
