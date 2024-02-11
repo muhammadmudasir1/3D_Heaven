@@ -27,15 +27,15 @@ const User=sequelize.define('User',{
         allowNull:false,
         validate: {
             isInt: {
-                msg: "must be integer"
+                msg: "invalid Role"
             },
             min: {
                 args: [1],
-                msg: "Value must be positive"
+                msg: "invalid Role"
             },
             max: {
-                args: [2],
-                msg: "Value is smaller or equal to 5"
+                args: [3],
+                msg: "invalid Role"
             }
         }
     }
