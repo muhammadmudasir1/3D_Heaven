@@ -6,8 +6,62 @@ const AmazonScrap = async (url) => {
             headless: false,
             defaultViewport: false
         });
+        const cookies = [
+            {
+              name: 'x-amz-captcha-2',
+              value: 'ein+OWV6fAh8Nj9ob3KQJw==',
+              url:"https://www.amazon.de"
+            },
+            {
+              name: 'x-amz-captcha-1',
+              value: '1707681299743344',
+              url:"https://www.amazon.de"
+            },
+            {
+              name: 'ubid-acbde',
+              value: '260-3435382-6113253',
+              url:"https://www.amazon.de"
+            },
+            {
+              name: 'session-token',
+              value: 'uj3VsV5xmdbVC+NSCmfy8m1/tOL8J1bRBmlFvAxH9NffLecJY0YMBzdSKqd3S0NBoXrQ12PyfyKPhVgu/cm2Xdwu+f5iHXYv1ZsxkYbLTl2T2VmQG/vfLE1rqzNknuMFHZP9tF3yRlf5h5r+FBS3ZE5XrxxxUfvuvpj6erhmQtYvgimVa8VnnSVHJ17wrlmsmtF6tCFYtGK4g/1BCvwlFjpJFuX+FZGyc+FK6pSliZboJESsxD3d43QcGhuPzWdCFbGJl/jPs2SwsFhQBVgJ9GxnxEDt4MK8I3cUpOyztVVQm7Cp/oY70FCPQeHXRH5pk7n/P1qsY7T2bs604sF+HV2SU4W6UuCa',
+              url:"https://www.amazon.de"
+            },
+            {
+              name: 'session-id-time',
+              value: '2082787201l',
+              url:"https://www.amazon.de"
+            },
+            {
+              name: 'session-id',
+              value: 'session-id',
+              url:"https://www.amazon.de"
+            },
+            {
+              name: 'lc-acbde',
+              value: 'de_DE',
+              url:"https://www.amazon.de"
+            },
+            {
+              name: 'i18n-prefs',
+              value: 'EUR',
+              url:"https://www.amazon.de"
+            },
+            {
+              name: 'csm-sid',
+              value: '751-8058369-9925421',
+              url:"https://www.amazon.de"
+            },
+            {
+              name: 'csm-hit',
+              value: 'tb:917MNG4A52H12C7SM0VF+s-917MNG4A52H12C7SM0VF|1707674115076&t:1707674115076&adb:adblk_no',
+              url:"https://www.amazon.de"
+            }
+          ];
+
         let regularPrice = null;
         const page = await browser.newPage();
+        page.setCookie(...cookies)
         await page.goto(url, { timeout: 60000 });
 
         // Add a delay to mimic human-like behavior

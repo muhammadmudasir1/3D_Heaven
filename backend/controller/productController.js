@@ -517,11 +517,13 @@ export const deleteProduct = async (req, res, next) => {
 
 export const deleteVariant = async (req, res, next) => {
     try {
+        
         const { productId, variantId } = req.body
+        console.log(productId,variantId)
         await removeVariant(productId, variantId)
         res.send({ "msg": "variant is removed" })
     } catch (error) {
-        console.log(error)
+        console.log("delete varient__________________________"+error)
         next(error)
     }
 }

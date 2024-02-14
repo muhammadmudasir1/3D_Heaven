@@ -8,6 +8,9 @@ const Review=sequelize.define("review",{
     cons:{
         type:DataTypes.STRING
     },
+    seoKeys:{
+        type:DataTypes.STRING
+    },
     review:{
         type:DataTypes.TEXT
     },

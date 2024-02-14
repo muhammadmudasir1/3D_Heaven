@@ -4,4 +4,3 @@ COPY . /app
 RUN npm install --force
 EXPOSE 3500
 CMD node index.js
-

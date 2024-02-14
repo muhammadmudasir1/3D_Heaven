@@ -57,9 +57,15 @@ export const beginnersGuidById=async(req,res,next)=>{
 }
 
 export const deleteBeginnersGuid=async (req,res,next)=>{
-    const Id=req.params.id
-    const result=await removeBeginnersGuid(Id)
-    res.send("This is delete News")
+    try {
+        const Id=req.params.id
+        const result=await removeBeginnersGuid(Id)
+        res.send("This is delete News")
+        
+    } catch (error) {
+        console.log(error)
+        next(error)
+    }
 }
 
 export const removeImageFromBG=async (req,res,next)=>{

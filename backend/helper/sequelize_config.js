@@ -13,8 +13,3 @@ export const connectDatabase =()=>{
         .catch((error)=>{
             console.log(`Database is not connecting ${error}`)})
 }
-
-
-
-
-
