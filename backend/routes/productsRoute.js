@@ -42,13 +42,13 @@ const route = express.Router()
     route.get('/type/:type',getProductsByCategory)
     route.patch('/removeVariant',verifyToken,adminAccess,deleteVariant)
     route.patch('/:productId',verifyToken,adminAccess,UpdateProduct)
-    route.post('/Specs',adminAccess,CreateSpecs)
+    route.post('/Specs',verifyToken,adminAccess,CreateSpecs)
     route.patch('/specs/:specsId',verifyToken,adminAccess,UpdateSpecs)
-    route.post('/',upload.fields([
+    route.post('/',verifyToken,adminAccess,upload.fields([
         {name:"thumbnail"},
         {name:"images"},
         {name:"sdImages"}
-    ]),adminAccess,CreateProduct)
+    ]),CreateProduct)
     route.get("/TopFive/",getTopFive)
     route.post('/search',Search)
     route.post('/searchbytype/:type',searchByType)

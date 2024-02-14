@@ -3,6 +3,7 @@ import createError from 'http-errors'
 
 export const adminAccess= async(req,res,next)=>{
     try {
+        console.log(req.userId)
         const user=await getUserById(req.userId)
         if(user.role<=2){
             next()

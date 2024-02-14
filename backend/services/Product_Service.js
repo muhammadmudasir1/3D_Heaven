@@ -437,13 +437,14 @@ export const productFilter = async (data) => {
             [Op.lt]: data.price
         }
     }
-    if (data.productType){
-        whereClause['productType']=data.productType
+    whereClause['include_in_BestDeals']=true
+    if (data.productType) {
+        whereClause['productType'] = data.productType
     }
 
     products = await Product.findAll({
         where: whereClause,
-        attributes: ['Id', 'product_name', 'manufacturer', 'discription', 'price', 'include_in_BestDeals', 'overall_rating','productType'],
+        attributes: ['Id', 'product_name', 'manufacturer', 'discription', 'price', 'include_in_BestDeals', 'overall_rating', 'productType'],
         include: [
             SLA_specs,
             FDM_specs,
@@ -451,12 +452,12 @@ export const productFilter = async (data) => {
             LeaserCutter_specs,
             purchaseLinks,
             {
-            model: ProductImages,
-            where: {
-                role: 1
-            },
-            attributes: ['path']
-        }]
+                model: ProductImages,
+                where: {
+                    role: 1
+                },
+                attributes: ['path']
+            }]
     })
     return products
 }
@@ -466,7 +467,7 @@ export const findPurchaseLinks = async (id) => {
         where: {
             "product": id
         },
-        attributes: ["purchaseLinksId", "siteType", "link", "title", "coupon", "discription", "retrivePriceFlag","visitingLink"]
+        attributes: ["purchaseLinksId", "siteType", "link", "title", "coupon", "discription", "retrivePriceFlag", "visitingLink"]
     })
     return result
 }
@@ -496,6 +497,7 @@ export const addPurchaseLink = async (data) => {
     const id = data.productId
     let result
     if (purchaseLinksId) {
+        console.log(purchaseLinksId)
         const hasLink = await purchaseLinks.findByPk(purchaseLinksId)
         if (hasLink) {
             result = await purchaseLinks.update({ ...link }, {
@@ -505,7 +507,15 @@ export const addPurchaseLink = async (data) => {
             })
         }
         else {
-            throw Error("PurchaseLink is not Found")
+            const product = await Product.findByPk(id)
+            if (product) {
+                console.log(link)
+                result = await purchaseLinks.create({ ...link, "product": product.Id })
+
+            }
+            else {
+                throw Error("Product is not Found")
+            }
         }
     }
     else {

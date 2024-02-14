@@ -13,6 +13,7 @@ const verifyToken = (req, res, next) => {
             const { username, userId } = jwt.verify(accessToken, accessTokenSecrate)
             req.username = username
             req.userId = userId
+            console.log(req.userId)
             next()
         }
         else{

@@ -29,7 +29,7 @@ export const removeBeginnersGuid= async(Id)=>{
 export const updateBeginnersGuid = async(Id,data)=>{
     const instance=await beginnersGuid.update(data,{
         where:{
-            newsId:Id
+            guidId:Id
         }
     })
     return instance
@@ -40,7 +40,7 @@ export const removeImageFromBeginnersGuid = async(Id)=>{
         "image":""
     },{
         where:{
-            newsId:Id
+            guidId:Id
         }
     })
     return instance

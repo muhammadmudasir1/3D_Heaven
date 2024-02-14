@@ -3,7 +3,7 @@ import puppeteer from "puppeteer";
 const AmazonScrap = async (url) => {
     try {
         const browser = await puppeteer.launch({
-            headless: false,
+            headless: "new",
             defaultViewport: false
         });
         const cookies = [
