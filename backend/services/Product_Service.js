@@ -444,7 +444,7 @@ export const productFilter = async (data) => {
 
     products = await Product.findAll({
         where: whereClause,
-        attributes: ['Id', 'product_name', 'manufacturer', 'discription', 'price', 'include_in_BestDeals', 'overall_rating', 'productType'],
+        attributes: ['Id', 'product_name', 'manufacturer', 'discription', 'price', 'include_in_BestDeals', 'overall_rating', 'productType','unit'],
         include: [
             SLA_specs,
             FDM_specs,

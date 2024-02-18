@@ -30,7 +30,8 @@ import {
     setTopFive,
     getTopFive,
     getProductsList,
-    filter
+    filter,
+    getThumbnail
 } from "../controller/productController.js"
 import verifyToken from '../middleware/verifyToken.js'
 import upload from '../middleware/fileUpload.js'
@@ -78,6 +79,7 @@ const route = express.Router()
     ]),addSOCImages)
     
     route.patch('/changeThumbnail/:productId',verifyToken,adminAccess,setThumbnail)
+    route.get('/getThumbnail/:productId',getThumbnail)
     
 
     

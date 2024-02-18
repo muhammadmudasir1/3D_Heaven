@@ -866,3 +866,13 @@ export const getTopFive = async (req, res, next) => {
         console.log(error)
     }
 }
+
+export const getThumbnail=async(req,res,next)=>{
+    const productId = req.params.productId
+    try {
+        const result=await findThumbnail(productId)
+        res.send(result)
+    } catch (error) {
+        next(error)
+    }
+}

@@ -23,13 +23,9 @@ DB()
 const app = express()
 app.use(express.json({limit:"50mb"}))
 app.use(cookieParser())
-app.use(express.static('upload'))
+app.use('/api',express.static('upload'))
 app.use(morgan('dev'))
 app.use(cors());
-// app.use(cors({
-//     origin: ['http://localhost:3000', 'http://127.0.0.1:3000'],
-//     credentials:true
-// }));
 
 
 
