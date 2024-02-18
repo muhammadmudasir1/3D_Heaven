@@ -11,6 +11,6 @@ client.on('connect',()=>{
 client.on('error',(error)=>{
     console.log(error)
 })
-await client.connect()
+client.connect()
 
 export default client

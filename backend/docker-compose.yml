@@ -3,6 +3,7 @@ services:
 
   redis:
     image: redis:latest
+    restart: always
     user: redis
     networks:
       - network
@@ -19,6 +20,7 @@ services:
 
   postgres:
     image: postgres:12-alpine
+    restart: always
     ports:
       - '5432:5432'
     environment:
@@ -31,9 +33,9 @@ services:
       - pg_data:/var/lib/postgresql/data/pg_data
     networks:
       - network
-
   # app:
   #   image: usamanasir00001/3d_heaven
+  #   restart: always
   #   ports:
   #     - "3500:3500" 
   #   depends_on:
@@ -45,10 +47,11 @@ services:
   #     POSTGRES_USER: postgres
   #     POSTGRES_PASSWORD: postgres
   #     POSTGRES_DB: postgres
-  #     REDIS_HOST: redis  # Update Redis host to use the service name
+  #     REDIS_HOST: redis
   #     REDIS_PORT: 6379
   #   networks:
   #     - network
+
 
 volumes:
   pg_data:
@@ -57,66 +60,3 @@ volumes:
 
 networks:
   network:
-
-
-
-
-
-
-# version: '3.3'
-# services:
-
-#   redis:
-#     image: redis:latest
-#     user: redis
-#     networks:
-#       - network
-#     ports:
-#       - '0.0.0.0:6379:6379'
-
-#   adminer:
-#     image: adminer
-#     restart: always
-#     ports:
-#       - 9090:8080
-#     networks:
-#       - network
-
-#   postgres:
-#     image: postgres:12-alpine
-#     ports:
-#       - '5432:5432'
-#     environment:
-#       POSTGRES_USER: postgres
-#       POSTGRES_PASSWORD: postgres
-#       POSTGRES_DB: postgres
-#       DIALECT: postgres
-#       PGDATA: /var/lib/postgresql/data/pg_data
-#     volumes:
-#       - pg_data:/var/lib/postgresql/data/pg_data
-#     networks:
-#       - network
-
-#   app:
-#     image: usamanasir00001/3d_heaven
-#     ports:
-#       - "3500:3500" 
-#     depends_on:
-#       - postgres
-#       - redis
-#     environment:
-#       POSTGRES_HOST: postgres
-#       POSTGRES_PORT: 5432
-#       POSTGRES_USER: postgres
-#       POSTGRES_PASSWORD: postgres
-#       POSTGRES_DB: postgres
-#       REDIS_HOST: redis
-#       REDIS_PORT: 6379
-
-# volumes:
-#   pg_data:
-#   db:
-#     driver: local
-
-# networks:
-#   network:  

@@ -1,15 +1,41 @@
 FROM node:18.14.2-alpine
-WORKDIR /my_app
-ADD package.json /my_app/package.json 
-COPY . /my_app/
+WORKDIR /app
+COPY . /app
 RUN npm install --force
-CMD ["node","index.js" ]
 EXPOSE 3500
+CMD node index.js
 
 # FROM node:18.14.2-alpine
+
+# # Install necessary dependencies for Puppeteer
+# RUN apk add --no-cache \
+#     udev \
+#     ttf-freefont \
+#     chromium \
+#     nss \
+#     freetype \
+#     freetype-dev \
+#     harfbuzz \
+#     ca-certificates \
+#     bash
+
+# # Set environment variable to use Chromium from Puppeteer
+# ENV PUPPETEER_EXECUTABLE_PATH="/usr/bin/chromium-browser"
+
+# # Set working directory
 # WORKDIR /app
-# COPY package.json /app
-# RUN npm install --force
-# COPY . /app
+
+# # Copy package.json and package-lock.json
+# COPY package*.json ./
+
+# # Install npm packages
+# RUN npm install
+
+# # Copy rest of the application
+# COPY . .
+
+# # Expose the port the app runs on
 # EXPOSE 3500
-# CMD ["node", "index.js"]
+
+# # Command to run the application
+# CMD ["node", "--no-sandbox", "index.js"]
