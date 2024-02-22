@@ -1,5 +1,6 @@
 import { Sequelize } from "sequelize";
 
+  // export const sequelize = new Sequelize( "3D_Heaven",'postgres', 'pgadmin', {
   export const sequelize = new Sequelize( "postgres",'postgres', 'postgres', {
   host: 'localhost',
   dialect: 'postgres',
