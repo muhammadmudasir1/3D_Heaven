@@ -2,7 +2,7 @@ import puppeteer from "puppeteer";
 
 const OrturScrap = async (url) => {
     const browser = await puppeteer.launch({
-        headless: "",
+        headless: false,
         defaultViewport: false
     });
     const page = await browser.newPage();
@@ -16,7 +16,7 @@ const OrturScrap = async (url) => {
     await page.evaluate(() => {
         localStorage.setItem('currentCurrency', 'EUR');
       });
-    let discountedPriceSelector = '.sale-price .etrans-money';
+    let discountedPriceSelector = '.new-price .etrans-money';
     let regularPriceSelector = ".old-price .etrans-money"
     let discountedPrice = ""
     let regularPrice = ""

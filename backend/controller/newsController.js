@@ -3,13 +3,16 @@ import CreateError from "http-errors"
 
 
 export const CreateNews=async(req,res,next)=>{
+        console.log('From Create News')
     try {
         const data=req.body
+        console.log(data)
         data.image=req.file.filename
         const result=await InsertNews(data)
         res.send(result)
         
     } catch (error) {
+        console.log(error)
         next(CreateError.InternalServerError())
     }
 

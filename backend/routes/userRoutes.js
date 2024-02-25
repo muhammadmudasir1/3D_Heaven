@@ -7,7 +7,7 @@ import { superUserAccess } from "../middleware/userAccess.js";
 const userRouter=Router()
 // varifyToken,superUserAccess,
 userRouter.get('/getAllUser',varifyToken,superUserAccess,allUsers)
-userRouter.post('/create',varifyToken,superUserAccess,createUser)
+userRouter.post('/create',createUser)
 userRouter.post('/login',login)
 userRouter.delete('/',logout)
 userRouter.delete('/deleteUser/:userId',varifyToken,superUserAccess,deleteUser)
