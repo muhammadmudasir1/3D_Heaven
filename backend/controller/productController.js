@@ -81,6 +81,7 @@ export const CreateProduct = async (req, res, next) => {
         const discription = req.body.discription
         const variants = req.body.variants
         const price = req.body.price
+        const unit = req.body.unit
 
         if (thumbnail) {
             createError.BadRequest("Thumbnail is compulsory")
@@ -125,7 +126,8 @@ export const CreateProduct = async (req, res, next) => {
             sdImages,
             thumbnail,
             variants,
-            price
+            price,
+            unit
         }
         console.log(req.body)
         const result = await insertProduct(data)
