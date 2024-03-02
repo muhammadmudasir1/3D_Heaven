@@ -467,7 +467,7 @@ export const findPurchaseLinks = async (id) => {
         where: {
             "product": id
         },
-        attributes: ["purchaseLinksId", "siteType", "link", "title", "coupon", "discription", "retrivePriceFlag", "visitingLink"]
+        attributes: ["purchaseLinksId", "siteType", "link", "title", "coupon", "discription", "retrivePriceFlag", "visitingLink","siteName"]
     })
     return result
 }
@@ -492,7 +492,7 @@ export const setNewPriceForPurchaseLink = async (id, data) => {
 
 export const addPurchaseLink = async (data) => {
     const purchaseLinksId = data.purchaseLink.purchaseLinkId
-
+    console.log(data)
     const link = data.purchaseLink
     const id = data.productId
     let result

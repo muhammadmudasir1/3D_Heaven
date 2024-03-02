@@ -11,6 +11,9 @@ const purchaseLinks = sequelize.define("purchaseLinks", {
         type: DataTypes.SMALLINT,
         allowNull: false,
     },
+    siteName: {
+        type: DataTypes.STRING
+    },
     link: {
         type: DataTypes.TEXT,
         allowNull: false,

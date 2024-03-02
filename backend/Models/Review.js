@@ -3,13 +3,13 @@ import { DataTypes } from "sequelize";
 
 const Review=sequelize.define("review",{
     pros:{
-        type:DataTypes.STRING
+        type:DataTypes.TEXT
     },
     cons:{
-        type:DataTypes.STRING
+        type:DataTypes.TEXT
     },
     seoKeys:{
-        type:DataTypes.STRING
+        type:DataTypes.TEXT
     },
     review:{
         type:DataTypes.TEXT
