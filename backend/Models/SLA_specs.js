@@ -17,10 +17,16 @@ const SLA_specs=sequelize.define('SLA',{
     ZAxis:{
         type:DataTypes.STRING
     },
+    userInterface:{
+        type:DataTypes.STRING
+    },
     ZAxisResolution:{
         type:DataTypes.STRING
     },
     platform:{
+        type:DataTypes.STRING
+    },
+    extras:{
         type:DataTypes.STRING
     },
     touchScreen:{

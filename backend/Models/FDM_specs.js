@@ -6,13 +6,42 @@ const FDM_specs=sequelize.define('FDM',{
     installationSpace:{
         type:DataTypes.STRING,
     },
+    installatingSpaceEnclouser:{
+        type:DataTypes.STRING,
+    },
+    frameMaterial:{
+        type:DataTypes.STRING,
+    },
+    guides:{
+        type:DataTypes.STRING,
+    },
+    
+    text:{
+        type:DataTypes.STRING,
+    },
+    printAccuracy:{
+        type:DataTypes.STRING,
+    },
+    realisticPrintingSpeed:{
+        type:DataTypes.STRING,
+    },
+    maximumAcceleration:{
+        type:DataTypes.STRING,
+    },
+    maximumPressureNozzleTemperature:{
+        type:DataTypes.STRING,
+    },
+    maximumPrintBedTemperature:{
+        type:DataTypes.STRING,
+    },
+    maximumPressureChamberTemperature:{
+        type:DataTypes.STRING,
+    },
+    
     surfaceArea:{
         type:DataTypes.STRING,
     },
     driveTech:{
-        type:DataTypes.STRING,
-    },
-    installatingSpaceEnclouser:{
         type:DataTypes.STRING,
     },
     printVolume:{

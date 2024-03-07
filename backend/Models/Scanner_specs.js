@@ -8,6 +8,21 @@ const Scanner_specs=sequelize.define('scanner',{
     scanAccuracy:{
         type:DataTypes.STRING
     },
+    workspaceScanWindow:{
+        type:DataTypes.STRING
+    },
+    imageCaptureRate:{
+        type:DataTypes.STRING
+    },
+    minimumObjectSize_handScan:{
+        type:DataTypes.STRING
+    },
+    minimumObjectSize_turnTable:{
+        type:DataTypes.STRING
+    },
+    maximumObjectSize:{
+        type:DataTypes.STRING
+    },
     scanningArea:{
         type:DataTypes.STRING
     },
@@ -29,6 +44,13 @@ const Scanner_specs=sequelize.define('scanner',{
     camera:{
         type:DataTypes.STRING
     },
+    portableBattery:{
+        type:DataTypes.STRING
+    },
+    accesories:{
+        type:DataTypes.STRING
+    },
+
     standardPackage:{
         type:DataTypes.STRING
     },

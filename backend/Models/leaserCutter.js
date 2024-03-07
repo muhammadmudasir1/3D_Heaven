@@ -8,6 +8,36 @@ const LeaserCutter_specs=sequelize.define("LeaserCutter",{
     laserWavelength:{
         type:DataTypes.STRING
     },
+    workSurface:{
+        type:DataTypes.STRING
+    },
+    machineWeight:{
+        type:DataTypes.STRING
+    },
+    guides:{
+        type:DataTypes.STRING
+    },
+    laserOpticalOutputPower:{
+        type:DataTypes.STRING
+    },
+    pinpointAccuracy:{
+        type:DataTypes.STRING
+    },
+    airAssist:{
+        type:DataTypes.STRING
+    },
+    possibleCuttingStrengths:{
+        type:DataTypes.STRING
+    },
+    possibleEngravingMaterials:{
+        type:DataTypes.STRING
+    },
+    possibleCuttingThicknesses:{
+        type:DataTypes.STRING
+    },
+    securityFeatures:{
+        type:DataTypes.STRING
+    },
     engravingAccuracy:{
         type:DataTypes.STRING
     },

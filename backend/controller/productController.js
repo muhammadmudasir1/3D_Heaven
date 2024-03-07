@@ -200,6 +200,7 @@ export const CreateSpecs = async (req, res, next) => {
 }
 
 export const UpdateSpecs = async (req, res, next) => {
+    console.log(req.body)
     try {
         const specsId = req.params.specsId
         const { product_id, productType, data } = req.body
