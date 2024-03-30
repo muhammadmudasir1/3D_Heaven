@@ -57,7 +57,8 @@ import {
     findReview,
     changeReviews,
     productList,
-    productFilter
+    productFilter,
+    setAltText
 } from "../services/Product_Service.js";
 import createError from 'http-errors'
 import Product from "../Models/Product.js"
@@ -65,9 +66,12 @@ import Product from "../Models/Product.js"
 export const CreateProduct = async (req, res, next) => {
     try {
         let thumbnail = req.files.thumbnail
+        // res.send("abc")
         let images = req.files.images
+        // console.log(images)
         let sdImages = req.files.sdImages
         const product_name = req.body.product_name
+        const product_title = req.body.product_title
         const manufacturer = req.body.manufacturer
         const price_rating = Number(req.body.price_rating)
         const innovation_rating = Number(req.body.innovation_rating)
@@ -83,34 +87,56 @@ export const CreateProduct = async (req, res, next) => {
         const price = req.body.price
         const unit = req.body.unit
 
-        if (thumbnail) {
+        if (!thumbnail) {
             createError.BadRequest("Thumbnail is compulsory")
         }
-        if (product_name) {
+        if (!product_name) {
             createError.BadRequest("Product Name is compulsory")
         }
-        if (productType) {
+        if (!productType) {
             createError.BadRequest("Product Type is compulsory")
         }
         if (Array.isArray(thumbnail)) {
             thumbnail = thumbnail.map((image) => {
-                return image.filename
+                let altText=''
+                const dotIndex = image.originalname.lastIndexOf('.');
+                if (dotIndex !== -1 && dotIndex > 0) {
+                    altText=image.originalname.substring(0, dotIndex);
+                } else {
+                    altText=imageName;
+                }
+                return {"path":image.filename,"altText":altText}
             })
         }
         if (images) {
             images = images.map((image) => {
-                return image.filename
+                let altText=''
+                const dotIndex = image.originalname.lastIndexOf('.');
+                if (dotIndex !== -1 && dotIndex > 0) {
+                    altText=image.originalname.substring(0, dotIndex);
+                } else {
+                    altText=imageName;
+                }
+                return {"path":image.filename,"altText":altText}
             })
 
         }
         if (sdImages) {
             sdImages = sdImages.map((image) => {
-                return image.filename
+                let altText=''
+                const dotIndex = image.originalname.lastIndexOf('.');
+                if (dotIndex !== -1 && dotIndex > 0) {
+                    altText=image.originalname.substring(0, dotIndex);
+                } else {
+                    altText=imageName;
+                }
+                return {"path":image.filename,"altText":altText}
             })
 
         }
         const data = {
             product_name,
+            product_title,
             manufacturer,
             price_rating,
             innovation_rating,
@@ -303,7 +329,7 @@ export const SingleProduct = async (req, res, next) => {
         }
         res.send(product)
     } catch (error) {
-        console.log(error)
+        // console.log(error)
         next(error)
     }
 }
@@ -458,7 +484,7 @@ export const UpdateProduct = async (req, res, next) => {
         res.send(returnData)
 
     } catch (error) {
-        console.log(error)
+        // console.log(error)
         next(error)
     }
 }
@@ -507,6 +533,11 @@ export const deleteProduct = async (req, res, next) => {
         await removeProduct(productId)
         oldImages.forEach((image) => {
             unlink(`upload/${image}`, (err) => {
+                if (err) {
+                    console.log(err)
+                }
+            })
+            unlink(`upload/s${image}`, (err) => {
                 if (err) {
                     console.log(err)
                 }
@@ -658,8 +689,15 @@ export const removeProductImage = async (req, res, next) => {
                             if (err) {
                                 console.log(err)
                             }
-                            return res.send({ "message": "Image is deleted" })
+                        
                         })
+                        unlink(`upload/s${deleteingImageInstance.path}`, (err) => {
+                            if (err) {
+                                console.log(err)
+                            }
+                        
+                        })
+                        return res.send({ "message": "Image is deleted" })
                     }
                 }
                 else {
@@ -722,8 +760,27 @@ export const getAllProductImages = async (req, res, next) => {
     try {
         const productId = req.params.productId
         const { ProductImages } = await productDetail(productId)
+        res.setHeader('Cache-Control', 'no-store'); // Ensure caching is disabled
+        res.setHeader('Expires', '0'); // Ensure caching is disabled
+        res.removeHeader('Last-Modified');
+        res.removeHeader('ETag');
         res.send(ProductImages)
     } catch (error) {
+        console.log(error)
+        next(error)
+    }
+}
+
+export const addAltText=async (req,res,next)=>{
+    try {
+        const ImageId=req.params.ImageId
+        const altText=req.body.altText
+        const result=await setAltText(ImageId,altText)
+        // res.send(result)
+        // console.log(ImageId)
+        res.send(result)
+    } catch (error) {
+        console.log(error)
         next(error)
     }
 }
@@ -739,11 +796,12 @@ export const addImages = async (req, res, next) => {
             })
         }
         const productInstance = await productDetail(productId)
-        console.log(productInstance.Id)
+        // console.log(productInstance.Id)
         if (productInstance.Id) {
 
             const result = await insertImages(productId, images, 2)
-            res.send({ result })
+            // console.log("abc"+result)
+            res.send( result)
 
         }
         else {

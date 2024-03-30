@@ -16,6 +16,10 @@ const beginnersGuid=sequelize.define("beginnersGuid",{
         type:DataTypes.TEXT,
         allowNull:false
     },
+    description:{
+        type:DataTypes.TEXT,
+        allowNull:true
+    },
     image:{
         type:DataTypes.STRING,
     }

@@ -8,7 +8,9 @@ export const InsertBeginnersGuid=async (data)=>{
 
 export const getBeginnersGuid= async ()=>{
     console.log("Beginners Guid")
-    const instances = await beginnersGuid.findAll()
+    const instances = await beginnersGuid.findAll({
+        attributes: ['guidId', 'Title','description','image']
+    })
     return instances
 }
 

@@ -12,6 +12,10 @@ const ProductImages=sequelize.define('ProductImages',{
         type:DataTypes.STRING,
         allowNull:false,
     },
+    altText:{
+        type:DataTypes.STRING,
+        allowNull:true
+    },
     role:{
         type:DataTypes.INTEGER,
         allowNull:false,

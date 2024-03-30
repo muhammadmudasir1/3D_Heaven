@@ -10,6 +10,8 @@ import purchaseLinks from "../Models/purchaseLinks.js"
 import ProductImages from "../Models/productImages.js"
 import Sequelize from "sequelize"
 import Review from "../Models/Review.js"
+import { reduce } from "../helper/optimize_image.js"
+import * as webp from 'webp-converter';
 
 
 
@@ -44,15 +46,18 @@ export const insertProduct = async (data) => {
             tempProduct.addVariant(instance.Id)
         })
     }
-    await ProductImages.create({ path: data.thumbnail[0], role: 1, ProductId: instance.Id })
+    let thumbnailreduced=await reduce(data.thumbnail[0].path)
+    await ProductImages.create({ path:thumbnailreduced,altText: data.thumbnail[0].altText, role: 1, ProductId: instance.Id })
     if (data.images) {
         data.images.forEach(async (image) => {
-            await ProductImages.create({ path: image, role: 2, ProductId: instance.Id })
+            let reducedImage= await reduce(image.path)
+            await ProductImages.create({ path: reducedImage,altText:image.altText, role: 2, ProductId: instance.Id })
         });
     }
     if (data.sdImages) {
         data.sdImages.forEach(async (image) => {
-            await ProductImages.create({ path: image, role: 3, ProductId: instance.Id })
+            let reducedImage= await reduce(image.path)
+            await ProductImages.create({ path: reducedImage,altText:image.altText, role: 3, ProductId: instance.Id })
         })
 
     }
@@ -576,11 +581,13 @@ export const findThumbnail = async (productId) => {
 }
 
 export const insertImages = async (productId, images, imageRole) => {
-    const result = images.map(async (image) => {
-        await ProductImages.create({ path: image, role: imageRole, ProductId: productId })
-    });
+    const result =await Promise.all(images.map(async (image) => {
+        let reducedImage=await reduce(image)
+        let images=await ProductImages.create({ path: reducedImage, role: imageRole, ProductId: productId })
+        return images.dataValues
+    }));
     console.log(result)
-    return true
+    return result
 }
 
 export const CreateReview = async (productId, data) => {
@@ -601,6 +608,15 @@ export const changeReviews = async (productId, data) => {
     const result = await Review.update(data, {
         where: {
             product: productId
+        }
+    })
+    return result
+}
+
+export const setAltText=async (imageId,altText)=>{
+    const result = await ProductImages.update({"altText":altText},{
+        where:{
+            id:imageId
         }
     })
     return result

@@ -16,6 +16,10 @@ const news=sequelize.define("news",{
         type:DataTypes.TEXT,
         allowNull:false
     },
+    description:{
+        type:DataTypes.TEXT,
+        allowNull:true
+    },
     image:{
         type:DataTypes.STRING,
     }

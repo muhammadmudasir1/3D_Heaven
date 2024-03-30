@@ -31,7 +31,8 @@ import {
     getTopFive,
     getProductsList,
     filter,
-    getThumbnail
+    getThumbnail,
+    addAltText
 } from "../controller/productController.js"
 import verifyToken from '../middleware/verifyToken.js'
 import upload from '../middleware/fileUpload.js'
@@ -74,6 +75,7 @@ const route = express.Router()
     route.patch('/addImages/:productId',verifyToken,adminAccess,upload.fields([
         {name:"images",maxCount:5}
     ]),addImages)
+    route.patch('/addAltText/:ImageId',verifyToken,adminAccess,addAltText)
     route.patch('/addsodimages/:productId',verifyToken,adminAccess,upload.fields([
         {name:"images",maxCount:5}
     ]),addSOCImages)

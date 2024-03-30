@@ -7,7 +7,9 @@ export const InsertNews=async (data)=>{
 }
 
 export const getNews= async ()=>{
-    const instances = await news.findAll()
+    const instances = await news.findAll({
+        attributes: ['newsId', 'Title','description','image']
+    })
     return instances
 }
 

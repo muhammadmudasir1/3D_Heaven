@@ -1,6 +1,15 @@
 import multer from "multer";
 import path from "path";
 
+async function convertToWebP(inputImagePath, outputImagePath) {
+    try {
+        await sharp(inputImagePath).toFormat('webp').toFile(outputImagePath);
+        console.log(`Image converted to WebP: ${outputImagePath}`);
+    } catch (error) {
+        console.error('Error converting image to WebP:', error);
+    }
+}
+
 let tempFilename = ""
 const storage = multer.diskStorage({
     destination: (req, file, callback) => {
@@ -24,9 +33,7 @@ const storage = multer.diskStorage({
 const fileFilter = (req, file, callback) => {
     try {
         const tempFilename = req.tempFilename;
-        console.log(`File ${tempFilename} is about to be uploaded.`);
         callback(null, true)
-        console.log("from file Upload ")
         
     } catch (error) {
         console.log(error)
