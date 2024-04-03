@@ -8,6 +8,7 @@ import purchaseLinks from "./purchaseLinks.js";
 import User from "./User.js";
 import ProductImages from "./productImages.js";
 import Review from "./Review.js";
+import newsLetter from "./newsLetter.js";
 
 const DB =()=>{
     const Models={
@@ -19,7 +20,8 @@ const DB =()=>{
         purchaseLinks,
         User,
         ProductImages,
-        Review
+        Review,
+        newsLetter
     };
 
     Product.hasMany(purchaseLinks,{

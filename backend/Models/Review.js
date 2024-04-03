@@ -14,6 +14,14 @@ const Review=sequelize.define("review",{
     review:{
         type:DataTypes.TEXT
     },
+    isImprint:{
+        type:DataTypes.BOOLEAN,
+        defaultValue:false
+    },
+    isDataProtection:{
+        type:DataTypes.BOOLEAN,
+        defaultValue:false
+    }
     
 })
 

@@ -11,6 +11,7 @@ import './helper/init_redis.js'
 import {sequelize} from './helper/sequelize_config.js'
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
+import settingRoutes from './routes/settingRoutes.js'
 
 
 
@@ -33,6 +34,7 @@ app.use('/api/products',route)
 app.use('/api/news',newsRoutes)
 app.use('/api/user',userRoutes)
 app.use('/api/beginnersGuid',beginnerGuidRoute)
+app.use('/api/setting',settingRoutes)
 
 app.use((req,res,next)=>{
     next(createError.NotFound("invalid Url or page is not found"))
