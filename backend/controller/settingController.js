@@ -1,6 +1,7 @@
 import redisClient from "../helper/init_redis.js"
 import CreateError from 'http-errors'
 import Review from "../Models/Review.js"
+import newsLetter from "../Models/newsLetter.js"
 
 
 export const getHeader=async(req,res,next)=>{
@@ -96,6 +97,34 @@ export const saveDataPolicy=async(req,res,next)=>{
         }
         res.send({"message":"isDataProtection is Save"})
         
+    } catch (error) {
+        console.log(error)
+        next(error)
+    }
+
+}
+export const saveNewsLetter=async(req,res,next)=>{
+    try {
+        const data=req.body.email
+        if(data){
+            const review=await newsLetter.create({email:data})
+        }
+        res.send({"message":"Email is Save"})
+
+    } catch (error) {
+        console.log(error)
+        next(error)
+    }
+
+}
+export const getNewsLetter=async(req,res,next)=>{
+    try {
+        const data=req.body.email
+        // if(data){
+        const review=await newsLetter.findAll({attributes:["email","createdAt"]})
+        res.send(review)
+        // }
+
     } catch (error) {
         console.log(error)
         next(error)
