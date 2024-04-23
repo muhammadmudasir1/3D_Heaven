@@ -12,6 +12,9 @@ import {sequelize} from './helper/sequelize_config.js'
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
 import settingRoutes from './routes/settingRoutes.js'
+import verifyToken from './middleware/verifyToken.js'
+import { adminAccess } from './middleware/userAccess.js'
+import upload from './middleware/fileUpload.js'
 
 
 
@@ -35,6 +38,12 @@ app.use('/api/news',newsRoutes)
 app.use('/api/user',userRoutes)
 app.use('/api/beginnersGuid',beginnerGuidRoute)
 app.use('/api/setting',settingRoutes)
+app.use('/api/uploadImage',upload.fields(
+    [{name:"images"}]
+),()=>{
+    const images=req.files.images
+    res.send(images)
+})
 
 app.use((req,res,next)=>{
     next(createError.NotFound("invalid Url or page is not found"))
@@ -42,7 +51,7 @@ app.use((req,res,next)=>{
 
 
 app.use((error,req,res,next)=>{
-    // console.log(error)
+    console.log(error)
     res.status(error.status||500)
     res.send(error)
 })

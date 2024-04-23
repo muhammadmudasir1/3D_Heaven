@@ -29,7 +29,7 @@ export const findProductsbyType = async (type) => {
             where: {
                 role: 1
             },
-            attributes: ['path']
+            attributes: ['path','altText']
 
         },
         order: [['createdAt', 'DESC']]
@@ -136,7 +136,7 @@ export const findProductById = async (id) => {
     const instance = await Product.findByPk(id, {
         include: {
             model: ProductImages,
-            attributes: ['path', 'role']
+            attributes: ['path', 'role','altText']
 
         }
     })

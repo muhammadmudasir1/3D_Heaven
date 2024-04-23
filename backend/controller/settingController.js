@@ -51,11 +51,12 @@ export const getImprint=async(req,res,next)=>{
 export const saveImprint=async(req,res,next)=>{
     try {
         const data=req.body.imprint
+        // console.log(data)
         if(data){
             const review=await Review.findAll({where:{"isImprint":true},limit:1})
-            console.log(review)
             if (review.length>0){
-                await Review.update({"review":data},{where:{"id":review.id}},)
+                // console.log(review[0].id)
+                await Review.update({"review":data},{where:{"id":review[0].id}})
             }
             else{
                 await Review.create({'review':data,'isImprint':true})
@@ -86,9 +87,8 @@ export const saveDataPolicy=async(req,res,next)=>{
         const data=req.body.imprint
         if(data){
             const review=await Review.findAll({where:{"isDataProtection":true},limit:1})
-            console.log(review)
             if (review.length>0){
-                await Review.update({"review":data},{where:{"id":review.id}},)
+                await Review.update({"review":data},{where:{"id":review[0].id}},)
             }
             else{
                 await Review.create({'review':data,'isDataProtection':true})
@@ -106,6 +106,7 @@ export const saveDataPolicy=async(req,res,next)=>{
 export const saveNewsLetter=async(req,res,next)=>{
     try {
         const data=req.body.email
+        console.log(data)
         if(data){
             const review=await newsLetter.create({email:data})
         }
