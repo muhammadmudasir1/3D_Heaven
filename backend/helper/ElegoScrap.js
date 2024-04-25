@@ -8,28 +8,25 @@ const ElegoScrap = async (url) => {
         const page = await browser.newPage();
 
         await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36');
-        await page.goto(url);
+        await page.goto(url,{ timeout: 60000 });
         await page.setOfflineMode(true); // Emulate offline mode
 
         
-        let discountedPriceSelector = '.gf_product-prices > .gf_product-price';
-        let regularPriceSelector='.gf_product-prices > .gf_product-compare-price';
+        let discountedPriceSelector = '.product-title-container .product-price-container .price .discounted';
+        let regularPriceSelector='.product-title-container .product-price-container .price ';
         let discountedPrice=""
         let regularPrice=""
 
         try {
             await page.waitForSelector(discountedPriceSelector);
             discountedPrice = await page.$eval(discountedPriceSelector, element => element.textContent);
+            console.log(discountedPrice)
             await page.waitForSelector(regularPriceSelector);
             regularPrice = await page.$eval(regularPriceSelector, element => element.textContent);
             
         } catch (error) {
-            discountedPriceSelector=".product-price-container .discounted"
-            regularPriceSelector=".product-price-container  .amount"
-            await page.waitForSelector(discountedPriceSelector);
-            discountedPrice = await page.$eval(discountedPriceSelector, element => element.textContent);
             await page.waitForSelector(regularPriceSelector);
-            regularPrice = await page.$eval(regularPriceSelector, element => element.textContent);
+            discountedPrice = await page.$eval(regularPriceSelector, element => element.textContent);
         }
 
             let unit=discountedPrice[0]

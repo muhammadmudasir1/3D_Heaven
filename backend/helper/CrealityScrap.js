@@ -2,15 +2,15 @@ import puppeteer from "puppeteer";
 
 const CrealityScrap = async (url) => {
         const browser = await puppeteer.launch({
-            headless: "new",
+            headless: 'new',
             defaultViewport: false
         });
         const page = await browser.newPage();
 
         await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36');
-        await page.goto(url);
+        await page.goto(url, { timeout: 60000 });
         
-        let discountedPriceSelector = '.current-price';
+        let discountedPriceSelector = '.product-info__header_price-wrapper .product-info__header_price';
         let regularPriceSelector=' .product-info__header_compare-at-price';
         let discountedPrice=""
         let regularPrice=""

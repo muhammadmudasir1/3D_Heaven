@@ -98,39 +98,39 @@ export const CreateProduct = async (req, res, next) => {
         }
         if (Array.isArray(thumbnail)) {
             thumbnail = thumbnail.map((image) => {
-                let altText=''
+                let altText = ''
                 const dotIndex = image.originalname.lastIndexOf('.');
                 if (dotIndex !== -1 && dotIndex > 0) {
-                    altText=image.originalname.substring(0, dotIndex);
+                    altText = image.originalname.substring(0, dotIndex);
                 } else {
-                    altText=imageName;
+                    altText = imageName;
                 }
-                return {"path":image.filename,"altText":altText}
+                return { "path": image.filename, "altText": altText }
             })
         }
         if (images) {
             images = images.map((image) => {
-                let altText=''
+                let altText = ''
                 const dotIndex = image.originalname.lastIndexOf('.');
                 if (dotIndex !== -1 && dotIndex > 0) {
-                    altText=image.originalname.substring(0, dotIndex);
+                    altText = image.originalname.substring(0, dotIndex);
                 } else {
-                    altText=imageName;
+                    altText = imageName;
                 }
-                return {"path":image.filename,"altText":altText}
+                return { "path": image.filename, "altText": altText }
             })
 
         }
         if (sdImages) {
             sdImages = sdImages.map((image) => {
-                let altText=''
+                let altText = ''
                 const dotIndex = image.originalname.lastIndexOf('.');
                 if (dotIndex !== -1 && dotIndex > 0) {
-                    altText=image.originalname.substring(0, dotIndex);
+                    altText = image.originalname.substring(0, dotIndex);
                 } else {
-                    altText=imageName;
+                    altText = imageName;
                 }
-                return {"path":image.filename,"altText":altText}
+                return { "path": image.filename, "altText": altText }
             })
 
         }
@@ -370,6 +370,7 @@ export const getPurchaseLinks = async (req, res, next) => {
 }
 
 export const getPrice = async (req, res, next) => {
+
     const check = async (type, link) => {
         let result
         switch (type) {
@@ -421,21 +422,22 @@ export const getPrice = async (req, res, next) => {
             default:
                 next(createError.UnprocessableEntity("Invalid Sites"))
         }
-        if(!result){
+        if (!result) {
             throw Error("Cannot Find price")
         }
 
         return result
     }
+
+    const purchaseLinkId = req.params.PurchaseLinkId
+    const oldPrices = await getPurchaseLinkPrice(purchaseLinkId)
+    const updateTime = new Date(oldPrices.updatedAt)
+    let currentTime = new Date()
     try {
-        const purchaseLinkId = req.params.PurchaseLinkId
-        const oldPrices = await getPurchaseLinkPrice(purchaseLinkId)
-        const updateTime = new Date(oldPrices.updatedAt)
-        let currentTime = new Date()
         if (oldPrices.retrivePriceFlag && (currentTime - updateTime) > 5 * 60 * 60 * 1000) {
 
             const response = await check(oldPrices.siteType, oldPrices.link)
-                console.log(response)
+            console.log(response)
             const data = {
                 discountedPrice: response.discountedPrice,
                 originalPrice: response.regularPrice,
@@ -455,20 +457,14 @@ export const getPrice = async (req, res, next) => {
                 })
         }
     } catch (error) {
-        try {
-            console.log(error)
-            res.send(
-                {
-                    "discountedPrice": oldPrices.discountedPrice,
-                    "originalPrice": oldPrices.originalPrice,
-                    "unit": oldPrices.unit,
-                    "msg": "Price Can't Find by Site"
-                })
-
-        } catch (err) {
-            console.log(error)
-            next(error)
-        }
+        console.log(error)
+        res.send(
+            {
+                "discountedPrice": oldPrices.discountedPrice,
+                "originalPrice": oldPrices.originalPrice,
+                "unit": oldPrices.unit,
+                "msg": "Price Can't Find by Site"
+            })
     }
 }
 
@@ -553,13 +549,13 @@ export const deleteProduct = async (req, res, next) => {
 
 export const deleteVariant = async (req, res, next) => {
     try {
-        
+
         const { productId, variantId } = req.body
-        console.log(productId,variantId)
+        console.log(productId, variantId)
         await removeVariant(productId, variantId)
         res.send({ "msg": "variant is removed" })
     } catch (error) {
-        console.log("delete varient__________________________"+error)
+        console.log("delete varient__________________________" + error)
         next(error)
     }
 }
@@ -651,11 +647,11 @@ export const checkPurchaseLink = async (req, res, next) => {
             default:
                 next(createError.UnprocessableEntity("Invalid Sites"))
         }
-        if(result){
+        if (result) {
             res.send(result)
 
         }
-        else{
+        else {
             next(createError("Cannot Find Price"))
         }
 
@@ -689,13 +685,13 @@ export const removeProductImage = async (req, res, next) => {
                             if (err) {
                                 console.log(err)
                             }
-                        
+
                         })
                         unlink(`upload/s${deleteingImageInstance.path}`, (err) => {
                             if (err) {
                                 console.log(err)
                             }
-                        
+
                         })
                         return res.send({ "message": "Image is deleted" })
                     }
@@ -771,11 +767,11 @@ export const getAllProductImages = async (req, res, next) => {
     }
 }
 
-export const addAltText=async (req,res,next)=>{
+export const addAltText = async (req, res, next) => {
     try {
-        const ImageId=req.params.ImageId
-        const altText=req.body.altText
-        const result=await setAltText(ImageId,altText)
+        const ImageId = req.params.ImageId
+        const altText = req.body.altText
+        const result = await setAltText(ImageId, altText)
         // res.send(result)
         // console.log(ImageId)
         res.send(result)
@@ -801,7 +797,7 @@ export const addImages = async (req, res, next) => {
 
             const result = await insertImages(productId, images, 2)
             // console.log("abc"+result)
-            res.send( result)
+            res.send(result)
 
         }
         else {
@@ -930,10 +926,10 @@ export const getTopFive = async (req, res, next) => {
     }
 }
 
-export const getThumbnail=async(req,res,next)=>{
+export const getThumbnail = async (req, res, next) => {
     const productId = req.params.productId
     try {
-        const result=await findThumbnail(productId)
+        const result = await findThumbnail(productId)
         res.send(result)
     } catch (error) {
         next(error)
