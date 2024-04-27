@@ -13,16 +13,16 @@ const RevopointScrap = async (url) => {
     await page.setOfflineMode(true);
 
 
-    let discountedPriceSelector = '.text-lg ';
+    let discountedPriceSelector = '.price-list--lg .money';
     let regularPriceSelector = '.sr-only .price-list ';
     let discountedPrice = ""
     let regularPrice = null
 
     await page.waitForSelector(discountedPriceSelector, { timeout: 60000 });
     discountedPrice = await page.$eval(discountedPriceSelector, element => element.innerHTML);
-    const $=cheerio.load(discountedPrice)
+    const $ = cheerio.load(discountedPrice)
     let moneyTerm = $('span.sr-only')[0]['next'].data;
-    discountedPrice=moneyTerm
+    discountedPrice = moneyTerm
 
     let unit = discountedPrice[0]
 
